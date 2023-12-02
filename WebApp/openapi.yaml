@@ -1,0 +1,120 @@
+{
+  "title": "MooM Awards",
+  "summary": "API to access quote data for MooM awards"
+  "paths": {
+    "/people": {
+      "get": {
+        "description": "Returns all people that are understood to have quotes.",
+        "repsonses": {
+          "200": {
+            "description": "A list of people",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#components/schema/person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/person": {
+      "post": {
+        "description": "Adds a new person to the known people list",
+        "responses": {
+          "requestBody": {
+            "description": "A person",
+            "content": {
+              "name": "The name of the person"
+            }
+          }
+          "201": {
+            "description": "Person created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "id": "id of person",
+                  "name": "name of person"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quotes": {
+      "get": {
+        "description": "Returns all quotes from the database",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved and returned all quotes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "id": "Quote ID",
+                  "content": "Quote content",
+                  "people": 
+                }
+              }
+            }
+          }
+        }
+      },
+    },
+    "/quote": {
+      "post": {
+        "description": "Adds a quote to the database",
+        "responses": {
+          "201": {
+            "description": "Successfully added quote to the database",
+            "content": {
+              "application/json": {
+                "schema": "unset"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "description": "Returns all categories from the database",
+        "reponses": {
+          "200": {
+            "description": "Successfully retrieved and returned all categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": "unset"
+                }
+              }
+            }
+          }
+        }
+      },
+    },
+    "/category" : {
+      "post": {
+        "description": "Adds a category to the database",
+        "reponses": {
+          "201": {
+            "description": "Successfully added category to the database"
+          }
+        }
+      },
+    },
+    "/category/:id": {
+      "delete": {
+        "description": "Deletes a category from the database. Any quotes associated to the category will have the category removed",
+        "204": {
+          "description": "Successfully deleted the category"
+        }
+      }
+    }
+  }
+}
