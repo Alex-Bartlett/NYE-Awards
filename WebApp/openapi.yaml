@@ -21,8 +21,6 @@
           }
         }
       }
-    },
-    "/person": {
       "post": {
         "description": "Adds a new person to the known people list",
         "responses": {
@@ -46,6 +44,28 @@
         }
       }
     },
+    "/people/:id": {
+      "get": {
+        "description": "Gets the person of the given id from the database",
+        "200": {
+          "description": "Successfully deleted the person",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "id": "id of person",
+                  "name": "name of person"
+                }
+              }
+            }
+        }
+      },
+      "delete": {
+        "description": "Deletes a person from the database. Any quotes associated to the person will have the person removed",
+        "204": {
+          "description": "Successfully deleted the person"
+        }
+      }
+    }
     "/quotes": {
       "get": {
         "description": "Returns all quotes from the database",
@@ -64,8 +84,6 @@
           }
         }
       },
-    },
-    "/quote": {
       "post": {
         "description": "Adds a quote to the database",
         "responses": {
@@ -97,8 +115,6 @@
           }
         }
       },
-    },
-    "/category" : {
       "post": {
         "description": "Adds a category to the database",
         "reponses": {

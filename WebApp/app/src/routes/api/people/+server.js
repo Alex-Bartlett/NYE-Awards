@@ -23,18 +23,6 @@ export const POST = async ({ request }) => {
 	return BadRequest('Missing name argument');
 }
 
-export const DELETE = async ({ request }) => {
-	const body = await request.json();
-	if (body.id) {
-		const { err } = await supabase
-			.from('people')
-			.delete()
-			.eq('id', body.id);
-		return new Response(null, { status: 204 })
-	}
-	return BadRequest('Missing id argument');
-}
-
 function BadRequest(err) {
 	return new Response(err, { status: 400 })
 }
