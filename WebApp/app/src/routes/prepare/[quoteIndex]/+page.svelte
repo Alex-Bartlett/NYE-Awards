@@ -1,10 +1,42 @@
 <script>
 	import CategoryChecklist from "$lib/components/CategoryChecklist.svelte";
 	import PeopleChecklist from "$lib/components/PeopleChecklist.svelte";
+	import { goto } from "$app/navigation";
 	export let data;
 
-	function Submit() {
+	let categoryChecklist;
+	let peopleChecklist;
+
+	async function ClearCategories() {
+		console.log(`Clearing categories for ${data.quote.id}`);
+		await fetch(`../api/quotes/clear/categories/${data.quote.id}`, {
+			method: "DELETE",
+		});
+	}
+	async function ClearPeople() {
+		await fetch(`../api/quotes/clear/people/${date.quote.id}`, {
+			method: "DELETE",
+		});
+	}
+
+	async function Submit() {
+		await ClearCategories();
+		categoryChecklist.activeCategories.forEach(async (category) => {
+			if (category.active == true) {
+				console.log(
+					`Adding category ${category.id} to ${data.quote.id}`,
+				);
+				await fetch(`../api/quotes/assign/category`, {
+					method: "PUT",
+					body: JSON.stringify({
+						quote_id: data.quote.id,
+						category_id: category.id,
+					}),
+				});
+			}
+		});
 		let href = `./${data.nextIndex}`;
+		goto(href);
 	}
 </script>
 
@@ -22,6 +54,7 @@
 				>
 					<h3 class="text-lg mb-2">Categories</h3>
 					<CategoryChecklist
+						bind:this={categoryChecklist}
 						categories={data.categories}
 						quote={data.quote}
 					/>
@@ -30,7 +63,11 @@
 					class="rounded-lg border-2 border-slate-300 px-4 pb-3 pt-2 h-auto w-full md:w-1/2 lg:w-2/5 xl:w-1/3 ml-0 sm:ml-10"
 				>
 					<h3 class="text-lg mb-2">People</h3>
-					<PeopleChecklist people={data.people} quote={data.quote} />
+					<PeopleChecklist
+						bind:this={peopleChecklist}
+						people={data.people}
+						quote={data.quote}
+					/>
 				</div>
 			</div>
 		</div>

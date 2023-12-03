@@ -1,21 +1,24 @@
+<svelte:options accessors={true} />
+
 <script>
 	export let categories;
 	export let quote;
+	export let activeCategories;
+
+	$: GetActiveCategories(categories, quote);
 
 	// Add active value to categories depending on if the quote already has that category assigned
-	function GetActiveCategories() {
-		let activeCategories = categories;
+	function GetActiveCategories(categories, quote) {
+		let newCategories = categories;
 		quote.categories.forEach((category) => {
-			activeCategories.forEach((activeCategory) => {
+			newCategories.forEach((activeCategory) => {
 				if (activeCategory.id == category.id) {
 					activeCategory.active = true;
 				}
 			});
 		});
-		return activeCategories;
+		activeCategories = newCategories;
 	}
-
-	let activeCategories = GetActiveCategories();
 
 	// Gets the index of the object with the given id, or -1 if not found
 	function GetActiveCategoryIndex(id) {

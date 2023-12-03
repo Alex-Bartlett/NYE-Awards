@@ -30,6 +30,9 @@ export const load = ({ params, fetch }) => {
 			return null;
 		}
 	}
+	const updateQuote = async (quoteId) => {
+		const res = await fetch('../api/quotes/assign')
+	}
 	const getNextIndex = () => {
 		return parseInt(params.quoteIndex) + 1;
 	}

@@ -1,21 +1,24 @@
+<svelte:options accessors={true} />
+
 <script>
 	export let people;
 	export let quote;
+	export let activePeople;
+
+	$: GetActivePeople(people, quote);
 
 	// Add active value to people depending on if the quote already has that person assigned
-	function GetActivePeople() {
-		let activePeople = people;
+	function GetActivePeople(people, quote) {
+		let newPeople = people;
 		quote.people.forEach((person) => {
-			activePeople.forEach((activePerson) => {
+			newPeople.forEach((activePerson) => {
 				if (activePerson.id == person.id) {
 					activePerson.active = true;
 				}
 			});
 		});
-		return activePeople;
+		activePeople = newPeople;
 	}
-
-	let activePeople = GetActivePeople();
 
 	// Gets the index of the object with the given id, or -1 if not found
 	function GetActivePersonIndex(id) {
