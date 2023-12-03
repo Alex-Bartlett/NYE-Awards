@@ -8,6 +8,7 @@ export const GET = async () => {
 		.select(`
 		id,
 		content,
+		full_quote,
 		quote_people (
 			people (
 				id,
