@@ -2,11 +2,11 @@
 	import CategoryChecklist from "$lib/components/CategoryChecklist.svelte";
 	import PeopleChecklist from "$lib/components/PeopleChecklist.svelte";
 	export let data;
+	console.log(data.quote);
 </script>
 
 {#if data.quote}
-	<p>{data.numQuotes}</p>
-	<p>{data.quote.content}</p>
+	<p>{data.quote.full_quote}</p>
 	<CategoryChecklist categories={data.categories} quote={data.quote} />
 	<PeopleChecklist people={data.people} quote={data.quote} />
 	<a href={`./${data.nextIndex}`}>Save and continue</a>
