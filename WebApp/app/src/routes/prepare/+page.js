@@ -5,12 +5,18 @@ export const load = ({ fetch }) => {
 		return data;
 	}
 	const fetchQuotes = async () => {
-		const res = await fetch('/api/quotes')
+		const res = await fetch('/api/quotes');
+		const data = await res.json();
+		return data;
+	}
+	const fetchPeople = async () => {
+		const res = await fetch('/api/people');
 		const data = await res.json();
 		return data;
 	}
 	return {
 		categories: fetchCategories(),
 		quotes: fetchQuotes(),
+		people: fetchPeople(),
 	}
 }
