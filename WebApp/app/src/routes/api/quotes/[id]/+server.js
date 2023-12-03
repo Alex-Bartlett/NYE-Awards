@@ -28,7 +28,7 @@ export const GET = async ({ params }) => {
 		}
 		return new Response(null, { status: 404 });
 	}
-	return BadRequest('Missing id paramter');
+	return BadRequest('Missing id parameter');
 }
 
 export const DELETE = async ({ params }) => {

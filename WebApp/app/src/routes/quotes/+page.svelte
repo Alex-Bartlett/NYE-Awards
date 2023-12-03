@@ -33,4 +33,5 @@
 			{/each}
 		</tbody>
 	</table>
+	<h1>Quotes</h1>
 </div>
