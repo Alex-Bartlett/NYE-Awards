@@ -1,6 +1,5 @@
 <script>
 	export let categories;
-	export let selectedCategories = ["1"];
 	export let quote;
 
 	// Add active value to categories depending on if the quote already has that category assigned
@@ -18,24 +17,26 @@
 
 	let activeCategories = GetActiveCategories();
 
-	// Add/remove category id from selectedCategories as the checkboxes are updated
-
-	// Change this to use activeCategories instead of selectedCategories
-	function Checked(event) {
-		console.log(event);
-		const state = event.target.checked;
-		const id = event.target.value;
-		if (state) {
-			if (!selectedCategories.includes(id)) {
-				selectedCategories.push(id);
-			}
-		} else {
-			if (selectedCategories.includes(id)) {
-				const res = selectedCategories.filter((elem) => elem != id);
-				selectedCategories = res;
+	// Gets the index of the object with the given id, or -1 if not found
+	function GetActiveCategoryIndex(id) {
+		for (let i in activeCategories) {
+			const category = activeCategories[i];
+			if (category.id == id) {
+				return i;
 			}
 		}
-		console.log(selectedCategories);
+		return -1;
+	}
+
+	// Update active status in activeCategories as the checkboxes are updated
+	function Checked(event) {
+		const state = event.target.checked;
+		const id = event.target.value;
+		const activeCategoryIndex = GetActiveCategoryIndex(id);
+		// If category is known, set it's active state
+		if (activeCategoryIndex >= 0) {
+			activeCategories[activeCategoryIndex].active = state;
+		}
 	}
 </script>
 
@@ -47,6 +48,7 @@
 			value={category.id}
 			name={category.name}
 			checked={category.active}
+			on:change={Checked}
 		/>
 		<label for={`category-${category.id}`}>{category.name}</label>
 	</div>
