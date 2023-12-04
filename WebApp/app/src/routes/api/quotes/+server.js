@@ -37,11 +37,12 @@ export const GET = async () => {
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	console.log(body);
-	if (body && body.content) {
+	if (body && body.content && body.full_quote) {
 		const { data, err } = await supabase
 			.from('quotes')
 			.insert({
-				content: body.content
+				content: body.content,
+				full_quote: body.full_quote
 			})
 			.select();
 		return new Response(JSON.stringify(data), { status: 201 });

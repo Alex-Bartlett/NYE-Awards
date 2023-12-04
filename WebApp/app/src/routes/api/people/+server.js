@@ -18,7 +18,9 @@ export const POST = async ({ request }) => {
 			.from('people')
 			.insert({ name: body.name })
 			.select();
-		return new Response(JSON.stringify(data), { status: 201 });
+		return new Response(JSON.stringify(data), {
+			status: 201
+		});
 	}
 	return BadRequest('Missing name argument');
 }
