@@ -53,6 +53,8 @@
 			checked={person.active}
 			on:change={Checked}
 		/>
-		<label for={`person-${person.id}`}>{person.name}</label>
+		<label for={`person-${person.id}`}
+			>{person.name[0].toUpperCase() + person.name.substr(1)}</label
+		>
 	</div>
 {/each}

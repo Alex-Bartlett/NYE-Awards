@@ -4,7 +4,8 @@ import { supabase } from "$lib/supabaseClient";
 export const GET = async () => {
 	let { data, err } = await supabase
 		.from('people')
-		.select();
+		.select()
+		.order('name');
 	if (err) {
 		console.error(err);
 	}
