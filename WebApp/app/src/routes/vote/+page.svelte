@@ -1,18 +1,18 @@
 <script>
-	import PeopleDropdown from "$lib/components/PeopleDropdown.svelte";
-	// your script goes here
-	export let data;
+  import PeopleDropdown from "$lib/components/PeopleDropdown.svelte";
+  // your script goes here
+  export let data;
 
-	function personSelected(event) {
-		const personId = event.detail.personId;
-		id = personId;
-	}
-	let id;
+  function personSelected(event) {
+    const id = event.detail.personId;
+    personId = id;
+  }
+  let personId;
 </script>
 
-{#if !id}
-	<!-- content here -->
-	<PeopleDropdown people={data.people} on:personSelected={personSelected} />
+{#if !personId}
+  <!-- content here -->
+  <PeopleDropdown people={data.people} on:personSelected={personSelected} />
 {:else}
-	<h1 class="text-3xl">{id}</h1>
+  <h1 class="text-3xl">{personId}</h1>
 {/if}
