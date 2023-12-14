@@ -3,8 +3,10 @@ import { supabase } from "$lib/supabaseClient";
 import { BadRequest, FormatQuoteData } from '../helper';
 
 export const GET = async ({ params, url }) => {
-	const category = url.searchParams.get('category');
-	let data = await GetAllQuotes({ category });
+	const category = url.searchParams.get('category'); // Category id
+	const unvotedBy = url.searchParams.get('unvotedBy'); // Person id
+	// console.log(voted);
+	let data = await GetAllQuotes({ category, unvotedBy });
 	return json(data);
 }
 
@@ -32,6 +34,16 @@ async function GetAllQuotes(args) {
 
 	if (args.category) {
 		query = query.eq('quote_categories.category_id', args.category);
+	}
+
+	if (args.unvotedBy) {
+		const votesRes = await supabase
+			.from('votes')
+			.select('quote_id')
+			.eq('person_id', args.unvotedBy)
+		const votesData = votesRes.data.map((x) => x.quote_id);
+		const votes = `(${votesData.toString()})`
+		query = query.not('id', 'in', votes);
 	}
 
 	const { data, err } = await query;

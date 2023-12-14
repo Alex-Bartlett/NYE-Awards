@@ -1,18 +1,18 @@
 <script>
-  import PeopleDropdown from "$lib/components/PeopleDropdown.svelte";
-  // your script goes here
-  export let data;
+	import PeopleDropdown from "$lib/components/PeopleDropdown.svelte";
+	// your script goes here
+	export let data;
 
-  function personSelected(event) {
-    const id = event.detail.personId;
-    personId = id;
-  }
-  let personId;
+	let personId;
+
+	// This needs to be replaced by login and authentication cookies
+	function personSelected(event) {
+		const id = event.detail.personId;
+		personId = id;
+	}
 </script>
 
 {#if !personId}
-  <!-- content here -->
-  <PeopleDropdown people={data.people} on:personSelected={personSelected} />
-{:else}
-  <h1 class="text-3xl">{personId}</h1>
-{/if}
+	<!-- content here -->
+	<PeopleDropdown people={data.people} on:personSelected={personSelected} />
+{:else}{/if}
