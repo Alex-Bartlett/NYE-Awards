@@ -4,18 +4,12 @@ import { BadRequest, FormatQuoteData } from '../helper';
 
 export const GET = async ({ params, url }) => {
 	const category = url.searchParams.get('category');
-	if (category) {
-		let data = await GetQuotesByCategory(category);
-		return json(data);
-	}
-	else {
-		let data = await GetAllQuotes();
-		return json(data);
-	}
+	let data = await GetAllQuotes({ category });
+	return json(data);
 }
 
-async function GetAllQuotes() {
-	const { data, err } = await supabase
+async function GetAllQuotes(args) {
+	let query = supabase
 		.from('quotes')
 		.select(`
 		id,
@@ -27,7 +21,8 @@ async function GetAllQuotes() {
 				name
 			)
 		),
-		quote_categories (
+		quote_categories${args.category ? '!inner' : ''} (
+			category_id,
 			categories (
 				id,
 				name
@@ -35,44 +30,18 @@ async function GetAllQuotes() {
 		)
 	`);
 
+	if (args.category) {
+		query = query.eq('quote_categories.category_id', args.category);
+	}
+
+	const { data, err } = await query;
+
 	if (data) {
 		return FormatQuotes(data);
 	}
 	else {
 		return [];
 	}
-}
-
-async function GetQuotesByCategory(categoryId) {
-	if (categoryId > -1) {
-		const { data, err } = await supabase
-			.from('quotes')
-			.select(`
-				id,
-				content,
-				full_quote,
-				quote_people (
-					people (
-						id,
-						name
-					)
-				),
-				quote_categories!inner (
-					category_id,
-					categories (
-						id,
-						name
-					)
-				)
-			`)
-			.eq('quote_categories.category_id', categoryId)
-
-		if (data) {
-			const formatted = FormatQuotes(data);
-			return formatted;
-		}
-	}
-	return [];
 }
 
 function FormatQuotes(data) {
