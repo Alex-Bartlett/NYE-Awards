@@ -1,5 +1,32 @@
-export const handle = async ({ resolve, event }) => {
+import { supabase } from '$lib/supabaseClient.js';
+import { sequence } from '@sveltejs/kit/hooks';
 
+// Auth
+const first = async ({ resolve, event }) => {
+	const session = event.cookies.get('session');
+
+	// If no session token, load page as normal
+	if (!session) {
+		console.log("no session");
+		return await resolve(event);
+	}
+
+	// Find user based on session
+	const userRes = await supabase.from('users').select('username, role, person_id').eq('user_auth_token', session).single();
+	const user = userRes.data;
+	if (user) {
+		event.locals.user = {
+			name: user.username,
+			role: user.role,
+			person_id: user.person_id
+		}
+	}
+
+	return await resolve(event);
+}
+
+// CORS
+const second = async ({ resolve, event }) => {
 	// Apply CORS header for API routes
 	if (event.url.pathname.startsWith('/api')) {
 		// Required for CORS to work
@@ -20,3 +47,5 @@ export const handle = async ({ resolve, event }) => {
 	}
 	return response;
 };
+
+export const handle = sequence(first, second)
