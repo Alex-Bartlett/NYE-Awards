@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 const roles = {
     ADMIN: "ADMIN",
+    MODERATOR: "MODERATOR",
     USER: "USER"
 }
 
@@ -22,7 +23,6 @@ export const load = async ({ locals }) => {
             name
             `)
             .not('id', 'in', registeredUsers);
-        console.log(data);
         return data;
     }
     return {
@@ -56,8 +56,6 @@ const register = async ({ request }) => {
             person_id: personId
         })
         .select();
-    console.log(res.data);
-    console.log(res.error);
 
     throw redirect(303, '/');
 }

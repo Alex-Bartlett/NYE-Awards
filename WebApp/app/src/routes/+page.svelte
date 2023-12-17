@@ -1,14 +1,15 @@
 <script>
   import ListButton from "$lib/components/ListButton.svelte";
   import { page } from "$app/stores";
-  //   export let data;
 </script>
 
 <div class="flex justify-center mt-20">
   <ul class="text-center flex flex-col w-1/2 sm:w-1/3 lg:w-1/6 xl:w-1/12">
     <ListButton href="/vote" name="Vote" />
-    {#if $page.data.user.role === "ADMIN"}
+    {#if $page.data.user.role === "MODERATOR" || $page.data.user.role === "ADMIN"}
       <ListButton href="/prepare" name="Prepare" />
+    {/if}
+    {#if $page.data.user.role === "ADMIN"}
       <ListButton href="/present" name="Present" />
       <ListButton href="/register" name="Register" />
     {/if}

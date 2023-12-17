@@ -33,15 +33,14 @@ export const load = ({ params, fetch }) => {
         return data;
     }
 
-    async function fetchQuotesInCategory(categoryId) {
-        const res = await fetch('/api/quotes?category=' + categoryId);
+    const fetchQuotesInCategory = async () => {
+        const res = await fetch('/api/quotes?category=' + params.categoryId);
         const data = await res.json();
         return data;
     }
 
     return {
-        people: fetchPeople(),
-        quotes: fetchQuotes(),
-        categorisedQuotes: fetchCategorisedQuotes(),
+        quotes: fetchQuotesInCategory()
+        // categorisedQuotes: fetchCategorisedQuotes(),
     }
 }

@@ -31,7 +31,6 @@ const login = async ({ cookies, request }) => {
 
     //generate new auth token
     const authenticatedUser = await getAuthenticatedUser(username);
-    console.log(authenticatedUser);
 
     cookies.set('session', authenticatedUser.user_auth_token, {
         // send cookie on every page

@@ -5,7 +5,6 @@ import { BadRequest, FormatQuoteData } from '../helper';
 export const GET = async ({ params, url }) => {
 	const category = url.searchParams.get('category'); // Category id
 	const unvotedBy = url.searchParams.get('unvotedBy'); // Person id
-	// console.log(voted);
 	let data = await GetAllQuotes({ category, unvotedBy });
 	return json(data);
 }
@@ -67,7 +66,6 @@ function FormatQuotes(data) {
 
 export const POST = async ({ request }) => {
 	const body = await request.json();
-	console.log(body);
 	if (body && body.content && body.full_quote) {
 		const { data, err } = await supabase
 			.from('quotes')
