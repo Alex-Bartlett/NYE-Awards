@@ -7,8 +7,9 @@ export const GET = async ({ params }) => {
 		const { data, err } = await supabase
 			.from('categories')
 			.select()
-			.eq('id', params.id);
-		if (data.length) {
+			.eq('id', params.id)
+			.single();
+		if (data) {
 			return json(data);
 		}
 		return new Response(null, { status: 404 });
