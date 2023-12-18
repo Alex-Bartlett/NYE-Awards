@@ -2,7 +2,7 @@
 	import { goto } from "$app/navigation";
 
 	function ConfirmPrepare() {
-		goto("prepare/0");
+		goto("/0");
 	}
 </script>
 
