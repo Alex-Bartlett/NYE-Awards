@@ -16,7 +16,6 @@ export const POST = async ({ request }) => {
 			status: 201
 		});
 	}
-	console.log(quote_id, category_id, person_id);
 	return BadRequest(`Invalid body: Missing${quote_id ? '' : ' quote_id'}${category_id ? '' : ' category_id'}${person_id ? '' : ' person_id'} value(s)`)
 }
 

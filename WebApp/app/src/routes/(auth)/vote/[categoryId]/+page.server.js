@@ -1,4 +1,4 @@
-export const load = ({ params, fetch, locals }) => {
+export const load = async ({ params, fetch, locals }) => {
 	const fetchPeople = async () => {
 		const res = await fetch('/api/people');
 		const data = await res.json();

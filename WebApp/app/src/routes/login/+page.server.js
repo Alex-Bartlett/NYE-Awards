@@ -4,7 +4,7 @@ import { supabase } from '$lib/supabaseClient.js';
 
 export const load = async ({ locals }) => {
     if (locals.user) {
-        throw redirect(302, '/');
+        redirect(302, '/');
     }
 }
 
@@ -45,7 +45,7 @@ const login = async ({ cookies, request }) => {
         maxAge: 60 * 60 * 24 * 3
     })
 
-    throw redirect(302, '/')
+    redirect(302, '/');
 }
 
 async function getUserByUsername(username) {

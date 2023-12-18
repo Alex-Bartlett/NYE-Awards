@@ -5,7 +5,6 @@
 	import Container from "$lib/components/Container.svelte";
 
 	export let data;
-	console.log(data.user);
 	const maxSelectedQuotes = 3;
 
 	let quotes = Object.values(data.quotes);
@@ -18,7 +17,6 @@
 	});
 
 	async function submit(event) {
-		console.log("Clicked");
 		selectedQuotes.forEach(async (quote) => {
 			const body = JSON.stringify({
 				quote_id: quote.id,
@@ -44,8 +42,8 @@
 			{#each quotes.filter((q) => q.isSelected) as quote (quote.id)}
 				<li
 					animate:flip
-					in:receive={{ key: quote.id }}
-					out:send={{ key: quote.id }}
+					in:receive|global={{ key: quote.id }}
+					out:send|global={{ key: quote.id }}
 					class="text-left"
 				>
 					<input
@@ -63,7 +61,7 @@
 		</ul>
 		{#if selectedQuotes.length === maxSelectedQuotes}
 			<button
-				in:scale={{ duration: 200 }}
+				in:scale|global={{ duration: 200 }}
 				on:click={submit}
 				class="mt-2 w-max text-lg rounded-md bg-emerald-700 hover:bg-emerald-600 py-2 px-4 transition-colors ease-in duration-75 disabled:bg-gray-600"
 				>Submit</button
@@ -75,8 +73,8 @@
 			{#each quotes.filter((q) => !q.isSelected) as quote (quote.id)}
 				<li
 					animate:flip
-					in:receive={{ key: quote.id }}
-					out:send={{ key: quote.id }}
+					in:receive|global={{ key: quote.id }}
+					out:send|global={{ key: quote.id }}
 					class="text-left"
 				>
 					<input
