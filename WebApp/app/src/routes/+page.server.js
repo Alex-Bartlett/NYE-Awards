@@ -5,7 +5,7 @@ export const load = async ({ locals }) => {
     //     user: locals.user
     // }
     if (!locals.user) {
-        redirect(303, '/login');
+        throw redirect(303, '/login')
     }
     return { user: locals.user }
 }
