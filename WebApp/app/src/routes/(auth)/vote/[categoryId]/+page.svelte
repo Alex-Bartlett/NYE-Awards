@@ -5,7 +5,7 @@
 	import Container from "$lib/components/Container.svelte";
 
 	export let data;
-	const maxSelectedQuotes = 3;
+	const maxSelectedQuotes = 5;
 
 	let quotes = Object.values(data.quotes);
 	quotes.forEach((quote) => (quote.isSelected = false));
