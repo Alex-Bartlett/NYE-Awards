@@ -1,4 +1,4 @@
-export const load = ({ fetch }) => {
+export const load = async ({ fetch }) => {
 	const fetchCategories = async () => {
 		const res = await fetch('/api/categories');
 		const data = await res.json();
