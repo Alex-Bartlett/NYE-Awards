@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 
 export const load = async () => {
-    redirect(302, '/');
+    throw redirect(302, '/');
 }
 
 export const actions = {
@@ -11,6 +11,6 @@ export const actions = {
             expires: new Date(0)
         })
 
-        redirect(302, '/login');
+        throw redirect(302, '/login')
     }
 }

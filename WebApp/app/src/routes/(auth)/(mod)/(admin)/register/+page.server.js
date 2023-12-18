@@ -57,7 +57,7 @@ const register = async ({ request }) => {
         })
         .select();
 
-    redirect(303, '/');
+    throw redirect(303, '/');
 }
 
 async function isUsernameUnique(username) {
