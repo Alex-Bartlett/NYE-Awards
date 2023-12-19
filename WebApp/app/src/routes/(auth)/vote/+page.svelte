@@ -1,8 +1,6 @@
 <script>
-	import PeopleDropdown from "$lib/components/PeopleDropdown.svelte";
 	import ListButton from "../../../lib/components/ListButton.svelte";
 	export let data;
-	let personId;
 </script>
 
 <div class="flex justify-center mt-20">

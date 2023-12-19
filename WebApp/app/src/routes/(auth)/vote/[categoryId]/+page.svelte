@@ -10,24 +10,37 @@
 	let quotes = Object.values(data.quotes);
 	quotes.forEach((quote) => (quote.isSelected = false));
 	$: selectedQuotes = quotes.filter((quote) => quote.isSelected == true);
-	$: emoji = selectedQuotes.length === maxSelectedQuotes ? "✔" : "❌";
+	$: emoji = selectedQuotes.length === maxSelectedQuotes ? "✅" : "❌";
 
 	const [send, receive] = crossfade({
 		fallback: fade,
 	});
 
+	// verifies if the user has already voted for this category (multiple tabs)
+	async function isCategoryUnsubmitted() {
+		const res = await fetch(
+			`/api/categories?unvotedBy=${data.user.person_id}`,
+		);
+		const json = await res.json();
+		const ids = json.map((x) => x.id);
+		return ids.includes(data.category.id);
+	}
+
 	async function submit(event) {
-		selectedQuotes.forEach(async (quote) => {
-			const body = JSON.stringify({
-				quote_id: quote.id,
-				category_id: data.category.id,
-				person_id: data.user.person_id,
+		const isUnsubmitted = await isCategoryUnsubmitted();
+		if (isUnsubmitted) {
+			selectedQuotes.forEach(async (quote) => {
+				const body = JSON.stringify({
+					quote_id: quote.id,
+					category_id: data.category.id,
+					person_id: data.user.person_id,
+				});
+				await fetch("/api/vote", {
+					method: "POST",
+					body: body,
+				});
 			});
-			await fetch("/api/vote", {
-				method: "POST",
-				body: body,
-			});
-		});
+		}
 		goto("/vote");
 	}
 </script>
@@ -42,8 +55,8 @@
 			{#each quotes.filter((q) => q.isSelected) as quote (quote.id)}
 				<li
 					animate:flip
-					in:receive|global={{ key: quote.id }}
-					out:send|global={{ key: quote.id }}
+					in:receive={{ key: quote.id }}
+					out:send={{ key: quote.id }}
 					class="text-left"
 				>
 					<input
