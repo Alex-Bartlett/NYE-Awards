@@ -8,7 +8,7 @@ export const load = async ({ locals }) => {
 	}
 }
 
-const login = async ({ cookies, request }) => {
+const login = async ({ cookies, request, locals }) => {
 	const data = await request.formData();
 	const username = data.get('username').toLowerCase();
 	const password = data.get('password');
@@ -44,7 +44,7 @@ const login = async ({ cookies, request }) => {
 		// set cookie to expire after 3 days
 		maxAge: 60 * 60 * 24 * 3
 	})
-
+	locals.action = 'login';
 	throw redirect(302, '/')
 }
 
