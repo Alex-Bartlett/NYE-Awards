@@ -31,12 +31,9 @@ const second = async ({ resolve, event }) => {
 	const apiKey = event.request.headers.get('API-key');
 	let apiKeyValid = false
 	// Validate api key if exists
-	console.log("hit");
 	if (apiKey) {
-		console.log("api key supplied");
 		const { data, err } = await supabase.from('api_keys').select().eq('key', apiKey).single();
 		if (data) {
-			console.log("...and its valid!");
 			apiKeyValid = true;
 		}
 	}
