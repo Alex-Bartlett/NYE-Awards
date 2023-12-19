@@ -29,6 +29,9 @@ const first = async ({ resolve, event }) => {
 const second = async ({ resolve, event }) => {
 	// Apply CORS header for API routes
 	if (event.url.pathname.startsWith('/api')) {
+		if (!event.locals.user || !event.locals.user.role === 'ADMIN') {
+			return new Response(null, { status: 403 })
+		}
 		// Required for CORS to work
 		if (event.request.method === 'OPTIONS') {
 			return new Response(null, {
