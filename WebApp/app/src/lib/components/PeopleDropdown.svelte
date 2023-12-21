@@ -1,9 +1,9 @@
 <script>
-	import { createEventDispatcher } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 
 	export let people;
 
-	let personId = people[0].id;
+	let personId = people[0]?.id;
 
 	const dispatch = createEventDispatcher();
 
@@ -11,7 +11,9 @@
 		dispatch("personSelected", { personId: personId });
 	}
 
-	SendPerson();
+	onMount(() => {
+		SendPerson();
+	});
 </script>
 
 <div class="flex flex-col items-center">
