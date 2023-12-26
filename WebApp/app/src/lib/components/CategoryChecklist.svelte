@@ -2,7 +2,7 @@
 
 <script>
 	export let categories;
-	export let quote;
+	export let quote = null;
 	export let activeCategories;
 
 	$: GetActiveCategories(categories, quote);
@@ -10,7 +10,7 @@
 	// Add active value to categories depending on if the quote already has that category assigned
 	function GetActiveCategories(categories, quote) {
 		let newCategories = categories;
-		quote.categories.forEach((category) => {
+		quote?.categories.forEach((category) => {
 			newCategories.forEach((activeCategory) => {
 				if (activeCategory.id == category.id) {
 					activeCategory.active = true;

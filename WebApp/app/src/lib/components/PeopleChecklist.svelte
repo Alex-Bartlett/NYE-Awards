@@ -2,7 +2,7 @@
 
 <script>
 	export let people;
-	export let quote;
+	export let quote = null;
 	export let activePeople;
 
 	$: GetActivePeople(people, quote);
@@ -10,7 +10,7 @@
 	// Add active value to people depending on if the quote already has that person assigned
 	function GetActivePeople(people, quote) {
 		let newPeople = people;
-		quote.people.forEach((person) => {
+		quote?.people.forEach((person) => {
 			newPeople.forEach((activePerson) => {
 				if (activePerson.id == person.id) {
 					activePerson.active = true;
