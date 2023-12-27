@@ -10,7 +10,7 @@ export const POST = async ({ request }) => {
 	const round = body.round
 
 	if (quote_id && category_id && person_id && round) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('votes')
 			.insert({ category_id: category_id, quote_id: quote_id, person_id: person_id, round: round, game_id: GAME_ID })
 			.select();

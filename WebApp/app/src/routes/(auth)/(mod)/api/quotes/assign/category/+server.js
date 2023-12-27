@@ -11,7 +11,7 @@ export const PUT = async ({ request }) => {
 	else if (!body.category_id) {
 		return BadRequest('Missing argument category_id');
 	}
-	const { data, err } = await supabase
+	const { data, error } = await supabase
 		.from('quote_categories')
 		.insert({
 			quote_id: body.quote_id,
@@ -29,7 +29,7 @@ export const DELETE = async ({ request }) => {
 	else if (!body.category_id) {
 		return BadRequest('Missing argument category_id');
 	}
-	const { err } = await supabase
+	const { error } = await supabase
 		.from('quote_categories')
 		.delete()
 		.eq('quote_id', body.quote_id)

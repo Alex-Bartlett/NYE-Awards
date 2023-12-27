@@ -5,7 +5,7 @@ import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ params }) => {
 	if (params.index) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('quotes')
 			.select(`
 			id,

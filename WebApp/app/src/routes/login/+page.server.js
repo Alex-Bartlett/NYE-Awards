@@ -49,12 +49,12 @@ const login = async ({ cookies, request, locals }) => {
 }
 
 async function getUserByUsername(username) {
-	const { data, err } = await supabase.from('users').select().ilike('username', username).single();
+	const { data, error } = await supabase.from('users').select().ilike('username', username).single();
 	return data
 }
 
 async function getAuthenticatedUser(username) {
-	const { data, err } = await supabase.from('users').update({ user_auth_token: crypto.randomUUID() }).ilike("username", username).single().select();
+	const { data, error } = await supabase.from('users').update({ user_auth_token: crypto.randomUUID() }).ilike("username", username).single().select();
 	return data;
 }
 

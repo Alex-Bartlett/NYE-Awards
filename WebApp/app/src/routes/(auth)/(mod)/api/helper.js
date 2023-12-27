@@ -1,5 +1,5 @@
-export const BadRequest = function (err) {
-	return new Response(err, { status: 400 })
+export const BadRequest = function (msg) {
+	return new Response(msg, { status: 400 })
 }
 export const FormatQuoteData = function (elem) {
 	let categories = [];

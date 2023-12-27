@@ -3,7 +3,7 @@ import { BadRequest } from '../../../../helper';
 
 export const DELETE = async ({ params }) => {
 	if (params.id) {
-		let { data, err } = await supabase
+		let { data, error } = await supabase
 			.from('quote_categories')
 			.delete()
 			.eq("quote_id", params.id)

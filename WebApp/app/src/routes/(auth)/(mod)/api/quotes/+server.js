@@ -36,7 +36,7 @@ async function GetAllQuotes(args) {
 		query = query.eq('quote_categories.category_id', args.category);
 	}
 
-	const { data, err } = await query;
+	const { data, error } = await query;
 
 	if (data) {
 		return FormatQuotes(data);
@@ -58,7 +58,7 @@ function FormatQuotes(data) {
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	if (body && body.content && body.full_quote) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('quotes')
 			.insert({
 				content: body.content,

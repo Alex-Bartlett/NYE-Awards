@@ -46,8 +46,8 @@ async function fetchAllMessages(client) {
 		console.log(targetPath);
 		fs.writeFileSync(targetPath, quotes.toString(), { flag: 'a+' });
 	}
-	catch (err) {
-		console.error(err);
+	catch (error) {
+		console.error(error);
 	}
 
 }

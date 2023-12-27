@@ -23,9 +23,9 @@ export const GET = async ({ url, params }) => {
 		query = query.not('id', 'in', votes);
 	}
 
-	let { data, err } = await query;
-	if (err) {
-		console.error(err);
+	let { data, error } = await query;
+	if (error) {
+		console.error(error);
 	}
 	return json(data);
 }
@@ -33,7 +33,7 @@ export const GET = async ({ url, params }) => {
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	if (body.name) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('categories')
 			.insert({ name: body.name, game_id: GAME_ID })
 			.select();
@@ -44,6 +44,6 @@ export const POST = async ({ request }) => {
 	return BadRequest('Missing name argument');
 }
 
-function BadRequest(err) {
-	return new Response(err, { status: 400 })
+function BadRequest(msg) {
+	return new Response(msg, { status: 400 })
 }

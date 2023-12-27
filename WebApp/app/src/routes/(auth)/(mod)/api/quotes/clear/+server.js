@@ -2,7 +2,7 @@ import { supabase } from "$lib/supabaseClient";
 import { GAME_ID } from '$env/static/private';
 
 export const DELETE = async () => {
-	let { data, err } = await supabase
+	let { data, error } = await supabase
 		.from('quotes')
 		.delete()
 		.eq('game_id', GAME_ID)

@@ -3,7 +3,7 @@ import { supabase } from '$lib/supabaseClient';
 import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ url, params }) => {
-    const { data, err } = await supabase
+    const { data, error } = await supabase
         .from('games')
         .select()
         .eq('id', GAME_ID)
