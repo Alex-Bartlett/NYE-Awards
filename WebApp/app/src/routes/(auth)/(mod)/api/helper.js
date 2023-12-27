@@ -11,7 +11,8 @@ export const FormatQuoteData = function (elem) {
 		full_quote: elem.full_quote,
 		content: elem.content,
 		categories: categories,
-		people: people
+		people: people,
+		round: elem.round,
 	};
 	return res;
 }
