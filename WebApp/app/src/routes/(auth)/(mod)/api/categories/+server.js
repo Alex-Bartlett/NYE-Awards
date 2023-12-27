@@ -1,18 +1,22 @@
 import { json } from '@sveltejs/kit';
 import { supabase } from "$lib/supabaseClient";
+import { GAME_ID } from '$env/static/private'
 
 export const GET = async ({ url, params }) => {
 	const unvotedBy = url.searchParams.get('unvotedBy'); // PersonID - Returns only categories that have not got a vote beside them for that person
+	const round = url.searchParams.get('round'); // Round number - Required for unvotedBy (probably invalid REST)
 	let query = supabase
 		.from('categories')
 		.select()
+		.eq('game_id', GAME_ID)
 		.order('name');
 
-	if (unvotedBy) {
+	if (unvotedBy && round) {
 		const votesRes = await supabase
 			.from('votes')
 			.select('category_id')
 			.eq('person_id', unvotedBy)
+			.eq('round', round)
 		const votesData = votesRes.data.map((x) => x.category_id);
 		const votes = `(${votesData.toString()})`
 
