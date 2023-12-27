@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { supabase } from "$lib/supabaseClient";
-import { GAME_ID } from '$env/static/private'
+import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ url, params }) => {
 	const unvotedBy = url.searchParams.get('unvotedBy'); // PersonID - Returns only categories that have not got a vote beside them for that person
@@ -35,7 +35,7 @@ export const POST = async ({ request }) => {
 	if (body.name) {
 		const { data, err } = await supabase
 			.from('categories')
-			.insert({ name: body.name })
+			.insert({ name: body.name, game_id: GAME_ID })
 			.select();
 		return new Response(JSON.stringify(data), {
 			status: 201
