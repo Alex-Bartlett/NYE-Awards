@@ -32,6 +32,7 @@
           quote_id: quote.id,
           category_id: data.category.id,
           person_id: data.user.person_id,
+          round: data.round,
         });
         btnText = "Submitting...";
         await fetch("/api/vote", {
