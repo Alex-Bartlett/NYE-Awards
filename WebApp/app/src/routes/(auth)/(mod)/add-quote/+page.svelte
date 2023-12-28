@@ -32,13 +32,22 @@
       />
     </div>
     <div>
-      <label class="block text-lg" for="quoteText">Year</label>
+      <label class="block text-lg" for="year">Year</label>
       <TextField
         placeholder=""
         required="true"
         id="year"
         name="year"
         value={new Date().getFullYear().toString()}
+      />
+    </div>
+    <div>
+      <label class="block text-lg" for="round">Round</label>
+      <TextField
+        placeholder="Round number"
+        required="true"
+        id="round"
+        name="round"
       />
     </div>
     <div class="flex justify-evenly flex-wrap">
@@ -75,7 +84,7 @@
     />
 
     {#if form?.invalid}
-      <p class="text-red-500">Quote and year are required</p>
+      <p class="text-red-500">Quote, year, and round are required</p>
     {/if}
 
     <button

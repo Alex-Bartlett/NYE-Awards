@@ -7,14 +7,16 @@ export const load = async ({ params, fetch, locals }) => {
 		throw redirect(303, '/vote')
 	}
 
-	const fetchRound = async () => {
+	async function FetchRound() {
 		const res = await fetch('/api/game');
 		const data = await res.json();
 		return data.current_round;
 	}
 
+	const fetchRound = async () => await FetchRound();
+
 	async function hasUserAlreadyVoted() {
-		const res = await fetch(`/api/categories?unvotedBy=${locals.user.person_id}&round=${await fetchRound()}`)
+		const res = await fetch(`/api/categories?unvotedBy=${locals.user.person_id}&round=${await FetchRound()}`)
 		const data = await res.json();
 		const ids = data.map((x) => x.id);
 		return !ids.includes(Number(params.categoryId))
@@ -25,7 +27,7 @@ export const load = async ({ params, fetch, locals }) => {
 		return data;
 	}
 	const fetchQuotesInCategory = async () => {
-		const res = await fetch('/api/quotes?category=' + params.categoryId);
+		const res = await fetch(`/api/quotes?category=${params.categoryId}&round=${await FetchRound()}`);
 		const data = await res.json();
 		return data;
 	}

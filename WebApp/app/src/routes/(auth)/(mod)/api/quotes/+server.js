@@ -5,7 +5,8 @@ import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ params, url }) => {
 	const category = url.searchParams.get('category'); // Category id
-	let data = await GetAllQuotes({ category });
+	const round = url.searchParams.get('round');
+	let data = await GetAllQuotes({ category, round });
 	return json(data);
 }
 
@@ -36,6 +37,10 @@ async function GetAllQuotes(args) {
 		query = query.eq('quote_categories.category_id', args.category);
 	}
 
+	if (args.round) {
+		query = query.eq('round', args.round);
+	}
+
 	const { data, error } = await query;
 
 	if (data) {
@@ -57,12 +62,13 @@ function FormatQuotes(data) {
 
 export const POST = async ({ request }) => {
 	const body = await request.json();
-	if (body && body.content && body.full_quote) {
+	if (body && body.content && body.full_quote && body.round) {
 		const { data, error } = await supabase
 			.from('quotes')
 			.insert({
 				content: body.content,
 				full_quote: body.full_quote,
+				round: body.round,
 				game_id: GAME_ID
 			})
 			.select();
