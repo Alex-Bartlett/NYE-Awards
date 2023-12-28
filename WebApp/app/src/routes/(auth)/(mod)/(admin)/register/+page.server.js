@@ -1,6 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { supabase } from '$lib/supabaseClient.js';
 import bcrypt from 'bcrypt';
+import { GAME_ID } from '$env/static/private';
 
 const roles = {
 	ADMIN: "ADMIN",
@@ -53,7 +54,8 @@ const register = async ({ request }) => {
 			password_hash: await bcrypt.hash(password, 10),
 			user_auth_token: crypto.randomUUID(),
 			role: roles.USER,
-			person_id: personId
+			person_id: personId,
+			game_id: GAME_ID
 		})
 		.select();
 
