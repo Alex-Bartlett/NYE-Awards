@@ -1,11 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { supabase } from "$lib/supabaseClient";
 import { BadRequest, FormatQuoteData } from '../helper';
+import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ params, url }) => {
 	const category = url.searchParams.get('category'); // Category id
-	const unvotedBy = url.searchParams.get('unvotedBy'); // Person id
-	let data = await GetAllQuotes({ category, unvotedBy });
+	const round = url.searchParams.get('round');
+	let data = await GetAllQuotes({ category, round });
 	return json(data);
 }
 
@@ -29,23 +30,18 @@ async function GetAllQuotes(args) {
 				name
 			)
 		)
-	`);
+		`)
+		.eq('game_id', GAME_ID);
 
 	if (args.category) {
 		query = query.eq('quote_categories.category_id', args.category);
 	}
 
-	if (args.unvotedBy) {
-		const votesRes = await supabase
-			.from('votes')
-			.select('quote_id')
-			.eq('person_id', args.unvotedBy)
-		const votesData = votesRes.data.map((x) => x.quote_id);
-		const votes = `(${votesData.toString()})`
-		query = query.not('id', 'in', votes);
+	if (args.round) {
+		query = query.eq('round', args.round);
 	}
 
-	const { data, err } = await query;
+	const { data, error } = await query;
 
 	if (data) {
 		return FormatQuotes(data);
@@ -66,15 +62,17 @@ function FormatQuotes(data) {
 
 export const POST = async ({ request }) => {
 	const body = await request.json();
-	if (body && body.content && body.full_quote) {
-		const { data, err } = await supabase
+	if (body && body.content && body.full_quote && body.round) {
+		const { data, error } = await supabase
 			.from('quotes')
 			.insert({
 				content: body.content,
-				full_quote: body.full_quote
+				full_quote: body.full_quote,
+				round: body.round,
+				game_id: GAME_ID
 			})
 			.select();
 		return new Response(JSON.stringify(data), { status: 201 });
 	}
-	return BadRequest('Missing content argument');
+	return BadRequest('Missing content or full_quote argument');
 }

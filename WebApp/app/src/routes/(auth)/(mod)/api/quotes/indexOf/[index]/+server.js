@@ -1,10 +1,11 @@
 import { json } from '@sveltejs/kit';
 import { supabase } from "$lib/supabaseClient";
 import { BadRequest, FormatQuoteData } from '../../../helper';
+import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ params }) => {
 	if (params.index) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('quotes')
 			.select(`
 			id,
@@ -23,6 +24,7 @@ export const GET = async ({ params }) => {
 				)
 			)
 			`)
+			.eq('game_id', GAME_ID)
 			.order('id', { ascending: true })
 			.range(params.index, params.index);
 		if (data.length) {
@@ -31,15 +33,4 @@ export const GET = async ({ params }) => {
 		return new Response(null, { status: 404 });
 	}
 	return BadRequest('Missing index parameter');
-}
-
-export const DELETE = async ({ params }) => {
-	if (params.id) {
-		const { err } = await supabase
-			.from('quotes')
-			.delete()
-			.eq('id', params.id);
-		return new Response(null, { status: 204 });
-	}
-	return BadRequest('Missing id parameter');
 }

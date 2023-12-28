@@ -32,7 +32,7 @@ const second = async ({ resolve, event }) => {
 	let apiKeyValid = false
 	// Validate api key if exists
 	if (apiKey) {
-		const { data, err } = await supabase.from('api_keys').select().eq('key', apiKey).single();
+		const { data, error } = await supabase.from('api_keys').select().eq('key', apiKey).single();
 		if (data) {
 			apiKeyValid = true;
 		}

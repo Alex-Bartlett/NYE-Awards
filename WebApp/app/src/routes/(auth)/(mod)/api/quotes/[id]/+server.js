@@ -4,7 +4,7 @@ import { BadRequest, FormatQuoteData } from '../../helper';
 
 export const GET = async ({ params }) => {
 	if (params.id) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('quotes')
 			.select(`
 			id,
@@ -34,7 +34,7 @@ export const GET = async ({ params }) => {
 
 export const DELETE = async ({ params }) => {
 	if (params.id) {
-		const { err } = await supabase
+		const { error } = await supabase
 			.from('quotes')
 			.delete()
 			.eq('id', params.id);

@@ -1,10 +1,14 @@
+import { GAME_ID } from '$env/static/private';
+
 const submit = async ({ request, fetch }) => {
 	const data = await request.formData();
 	const content = `"${data.get('quoteText')}"`;
-	const year = data.get('year')
+	const year = data.get('year');
+	let round = Number.parseInt(data.get('round'));
 	const people = JSON.parse(data.get('people'));
 	const categories = JSON.parse(data.get('categories'));
-
+	// Set default if NaN for round
+	if (isNaN(round)) { round = 1 };
 	// Get people as a comma separated string
 	const peopleString = Object.values(people)
 		.map((p) => p.name)
@@ -19,6 +23,8 @@ const submit = async ({ request, fetch }) => {
 		body: JSON.stringify({
 			content: content,
 			full_quote: fullQuote,
+			round: round,
+			game_id: GAME_ID
 		}),
 	});
 

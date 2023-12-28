@@ -13,6 +13,7 @@
     {#if $page.data.user.role === "ADMIN"}
       <ListButton href="/present" name="Present" />
       <ListButton href="/register" name="Register" />
+      <ListButton href="/rounds" name="Rounds" />
     {/if}
     {#if $page.data.user}
       <li class="my-2">

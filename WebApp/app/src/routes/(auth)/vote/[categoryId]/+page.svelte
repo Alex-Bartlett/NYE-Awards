@@ -3,9 +3,10 @@
   import { flip } from "svelte/animate";
   import { goto } from "$app/navigation";
   import Container from "$lib/components/Container.svelte";
+  import round_config from "$lib/rounds.config.json";
 
   export let data;
-  const maxSelectedQuotes = 5;
+  const maxSelectedQuotes = round_config[data.round].votes_per_category;
 
   let quotes = Object.values(data.quotes);
   quotes.forEach((quote) => (quote.isSelected = false));
@@ -32,6 +33,7 @@
           quote_id: quote.id,
           category_id: data.category.id,
           person_id: data.user.person_id,
+          round: data.round,
         });
         btnText = "Submitting...";
         await fetch("/api/vote", {

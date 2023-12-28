@@ -16,7 +16,7 @@ export const load = async ({ locals }) => {
 		// return data;
 		const registeredUsersRes = await supabase.from('users').select('person_id')
 		const registeredUsers = `(${registeredUsersRes.data.map(p => p.person_id).join(',')})`;
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('people')
 			.select(`
             id,
@@ -61,7 +61,7 @@ const register = async ({ request }) => {
 }
 
 async function isUsernameUnique(username) {
-	const { data, err } = await supabase.from('users').select().ilike('username', username).single();
+	const { data, error } = await supabase.from('users').select().ilike('username', username).single();
 	return !data
 }
 

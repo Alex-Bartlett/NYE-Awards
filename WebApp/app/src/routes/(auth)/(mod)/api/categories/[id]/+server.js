@@ -4,7 +4,7 @@ import { BadRequest } from '../../helper';
 
 export const GET = async ({ params }) => {
 	if (params.id) {
-		const { data, err } = await supabase
+		const { data, error } = await supabase
 			.from('categories')
 			.select()
 			.eq('id', params.id)
@@ -19,7 +19,7 @@ export const GET = async ({ params }) => {
 
 export const DELETE = async ({ params }) => {
 	if (params.id) {
-		const { err } = await supabase
+		const { error } = await supabase
 			.from('categories')
 			.delete()
 			.eq('id', params.id);
