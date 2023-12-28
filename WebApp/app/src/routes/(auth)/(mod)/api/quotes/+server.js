@@ -71,7 +71,8 @@ export const POST = async ({ request }) => {
 				round: body.round,
 				game_id: GAME_ID
 			})
-			.select();
+			.select()
+			.single();
 		return new Response(JSON.stringify(data), { status: 201 });
 	}
 	return BadRequest('Missing content or full_quote argument');
