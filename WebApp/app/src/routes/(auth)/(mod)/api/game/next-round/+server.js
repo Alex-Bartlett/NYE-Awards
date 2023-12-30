@@ -23,6 +23,7 @@ async function GetTopQuotesOfRound(round) {
 async function PromoteTopQuotes(quotes, newRound) {
     for (let quote of quotes) {
         // This is inefficient, and could be hugely optimised with a sproc, but for the sake of a hobby project this will suffice.
+        // Turns out Vercel has a 5 second request timeout, so this method times out unless run locally
         const quotePeopleQuery = await supabase.from('quote_people').select().eq('quote_id', quote.id);
         const newQuoteQuery = await supabase.from('quotes').insert({ content: quote.content, full_quote: quote.full_quote, game_id: GAME_ID, round: newRound }).select().single();
         const newQuoteId = newQuoteQuery.data.id;
