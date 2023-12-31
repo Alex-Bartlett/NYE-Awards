@@ -27,6 +27,7 @@ function restructureQuotesToCategories(unstructuredQuotes) {
     return categories;
 }
 
+
 export const GET = async ({ url, params }) => {
     // Get round from params
     let round = url.searchParams.get('round');

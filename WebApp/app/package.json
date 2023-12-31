@@ -20,6 +20,10 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.39.0",
-		"bcrypt": "^5.1.1"
+		"@tsparticles/all": "^3.0.3",
+		"@tsparticles/engine": "^3.0.3",
+		"@tsparticles/svelte": "^3.0.0",
+		"bcrypt": "^5.1.1",
+		"tsparticles": "^3.0.3"
 	}
 }

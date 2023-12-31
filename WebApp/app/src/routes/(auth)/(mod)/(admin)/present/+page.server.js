@@ -1,4 +1,4 @@
-
+export const ssr = false; // Disable SSR because fireworks are so annoying
 export const load = async ({ fetch, url, params }) => {
     const categoryId = url.searchParams.get('id') ?? -1;
 
@@ -7,11 +7,17 @@ export const load = async ({ fetch, url, params }) => {
         const data = await res.json();
         return data;
     }
-    // Run this now, because the output is needed for the fetchWinners method
-    const topQuotes = await fetchTopQuotes();
+
+    async function fetchSelfVoters() {
+        const res = await fetch('/api/game/self-votes');
+        const data = await res.json();
+
+        return data;
+    }
 
     return {
-        topQuotes,
+        topQuotes: await fetchTopQuotes(),
+        selfVoters: await fetchSelfVoters(),
         categoryId,
     }
 }

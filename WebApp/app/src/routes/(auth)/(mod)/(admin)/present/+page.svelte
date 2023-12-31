@@ -3,6 +3,7 @@
 	import { flip } from "svelte/animate";
 	import { fly, fade, slide } from "svelte/transition";
 	import { typewriter } from "$lib/animations/typewriter";
+	import Fireworks from "$lib/components/Fireworks.svelte";
 
 	export let data;
 
@@ -21,8 +22,14 @@
 	let showRunnersUp = false;
 	// Display next slide button
 	let showNextSlideButton = false;
+	// Secret slide started
+	let secretSlideStarted = false;
 	// Presentation is over
 	let presentationComplete = false;
+	// Show secret slide winner on finish page
+	let showCheater = false;
+	// Show fireworks on finish page
+	let showFireworks = false;
 
 	// If the user supplies a category id in the query, the presentation should start from that category
 	const paramCategoryId = data.categoryId;
@@ -42,7 +49,8 @@
 
 	// Get the winners of the current category
 	async function fetchWinners() {
-		const winningQuote = currentQuotes[0];
+		const quotes = topQuotes[categories[currentCategoryIndex]]; // Although the same value, we can't use the reactive variable $: currentQuotes because it hasn't updated yet.
+		let winningQuote = quotes[0];
 		const res = await fetch(`/api/quotes/${winningQuote.id}`);
 		const data = await res.json();
 		const people = data.people;
@@ -60,20 +68,55 @@
 		inProgress = true;
 	}
 
-	async function nextSlide(e) {
-		// Reset variables
+	function resetVariables() {
 		inProgress = true;
 		showQuote = false;
 		showRunnersUp = false;
 		showNextSlideButton = false;
 		runnersUp = [];
+	}
+
+	async function nextSlide(e) {
+		// Reset variables
+		resetVariables();
 
 		// If there's no more categories left, end the presentation
-		if (currentCategoryIndex === categories.length) {
-			presentationComplete = true;
+		if (currentCategoryIndex === categories.length - 1) {
+			if (!secretSlideStarted) {
+				secretSlideStarted = true;
+				secretSlide();
+			} else {
+				// Set the relevant states
+				presentationComplete = true;
+				inProgress = false;
+			}
 		} else {
 			currentCategoryIndex++;
+			winners = await fetchWinners();
 		}
+	}
+
+	// Do some messy stuff to fit the secret slide into the category format
+	async function secretSlide() {
+		console.log("hit");
+		let selfVoters = data.selfVoters.slice(0, 3); // Only get the top 3
+		// Capitalise the first letter of the names
+		selfVoters.forEach(
+			(v) => (v.person = v.person.charAt(0).toUpperCase() + v.person.slice(1))
+		);
+		console.log(selfVoters);
+		let selfVotersFormatted = selfVoters.map((vote, index) => {
+			const x = {
+				content: `${index > 0 ? vote.person : ""} voted for themselves ${
+					vote.times_voted_for_themselves
+				} times`, // Don't show the name if it's the first person
+				category_name: "Secret category - Least Humble", // The secret category name
+			};
+			return x;
+		});
+		winners = selfVoters[0].person;
+		console.log(selfVotersFormatted);
+		currentQuotes = selfVotersFormatted;
 	}
 
 	function revealQuote() {
@@ -104,16 +147,54 @@
 	onMount(async () => {
 		winners = await fetchWinners();
 	});
+
+	function fireworks() {
+		console.log("fireworks!!");
+		showFireworks = true;
+	}
 </script>
 
 <main>
-	{#if !inProgress}
+	{#if !inProgress && !presentationComplete}
 		<div class="flex flex-col items-center">
 			<button
 				on:click={beginPresentation}
 				class="w-max text-lg rounded-md bg-emerald-800 hover:bg-emerald-600 py-2 px-4 transition-colors ease-in duration-75"
 				>Begin Presentation</button
 			>
+		</div>
+	{:else if !inProgress && presentationComplete}
+		<div
+			in:fade={{ duration: 200, delay: 200 }}
+			class="flex flex-col items-center"
+		>
+			<h1
+				in:typewriter={{ speed: 2, delay: 200 }}
+				on:introend={() => (showCheater = true)}
+				class="mt-10 text-4xl"
+			>
+				<!-- This should still be the self-voter -->
+				Congratulations to the winners
+			</h1>
+			{#if showCheater}
+				<h2
+					in:fade={{ duration: 800, delay: 1200 }}
+					on:introend={fireworks}
+					class="text-3xl mt-5"
+				>
+					except maybe {winners}
+				</h2>
+			{/if}
+			{#if showFireworks}
+				<Fireworks />
+				<!-- This doesnt work but at this point who cares -->
+				<a
+					in:fade={{ delay: 2000, duration: 800 }}
+					href="./present"
+					class="mt-20 w-max text-lg rounded-md bg-emerald-800 hover:bg-emerald-600 py-2 px-4 transition-colors ease-in duration-75"
+					>Restart Presentation</a
+				>
+			{/if}
 		</div>
 	{:else}
 		<div out:fade={{ duration: 200 }} class="flex flex-col items-center">
@@ -128,7 +209,11 @@
 			</h1>
 			{#if showQuote}
 				<h2 in:fade={{ delay: 800, duration: 500 }} class="text-4xl mt-10">
-					<span class="flash">{winners}</span> won with
+					<span class="flash">{winners}</span>
+					{#if !secretSlideStarted}
+						<!-- Only show this if not the secret slide -->
+						won with
+					{/if}
 				</h2>
 				<h2
 					in:typewriter={{ speed: 2, delay: 1600 }}
@@ -181,7 +266,7 @@
 					{#if !presentationComplete}
 						Next Category
 					{:else}
-						Secret Category
+						Finish
 					{/if}</button
 				>
 			{/if}
