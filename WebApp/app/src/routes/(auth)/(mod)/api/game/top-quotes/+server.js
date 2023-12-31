@@ -1,11 +1,30 @@
 import { json } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import { GAME_ID } from '$env/static/private';
 import { getGameInfo, getTopQuotes } from '$lib/utils/gameUtils';
-import rounds_config from '$lib/rounds.config.json'
 
-async function fetchCurrentRound() {
-    const { data, error } = await supabase.from('games').select()
+/**
+ * Takes topQuotes rpc and restructures it to a categories-first object, each category having its quotes as an object
+ * @param {Object} unstructuredQuotes 
+ * @returns 
+ */
+function restructureQuotesToCategories(unstructuredQuotes) {
+    let categories = {};
+    for (const quote of unstructuredQuotes) {
+        const category = quote.category_id;
+        // Create an empty array for a new category
+        if (!(category in categories)) {
+            categories[category] = [];
+        }
+        // Add the quote to the category
+        categories[category].push({
+            id: quote.id,
+            content: quote.content,
+            full_quote: quote.full_quote,
+            count: quote.count,
+            category_name: quote.category_name
+        })
+    }
+    return categories;
 }
 
 export const GET = async ({ url, params }) => {
@@ -18,6 +37,6 @@ export const GET = async ({ url, params }) => {
     }
 
     const topQuotes = await getTopQuotes(GAME_ID, round);
-    // To-do: restructure top quotes here by category
-    return json(topQuotes);
+    const categories = restructureQuotesToCategories(topQuotes);
+    return json(categories);
 }
