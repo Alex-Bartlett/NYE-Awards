@@ -5,7 +5,7 @@
 
 <header>
 	<h1
-		class="text-center text-emerald-600 text-5xl lg:text-6xl py-4 font-medium"
+		class="lg:mt-10 text-center text-emerald-600 text-5xl lg:text-6xl py-4 font-medium"
 	>
 		<a href="/" class="flex justify-center"
 			><img

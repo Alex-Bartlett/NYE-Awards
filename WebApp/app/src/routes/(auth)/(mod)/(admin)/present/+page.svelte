@@ -156,7 +156,7 @@
 
 <main>
 	{#if !inProgress && !presentationComplete}
-		<div class="flex flex-col items-center">
+		<div class="flex flex-col items-center mt-40">
 			<button
 				on:click={beginPresentation}
 				class="w-max text-lg rounded-md bg-emerald-800 hover:bg-emerald-600 py-2 px-4 transition-colors ease-in duration-75"
