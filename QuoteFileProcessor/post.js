@@ -1,7 +1,17 @@
 // Import quotes
-// Update these as necessary
-const url = 'http://127.0.0.1:5173'
-const dump = require('./output/quotes_1701644489317.json')
+// Update as necessary
+const apiUrl = 'http://127.0.0.1:5173'
+
+// Get most recent dump
+const fs = require('fs');
+const path = require('path');
+const outputDir = path.join(__dirname, "output");
+// Sort by name (using the unix time)
+const dumpFile = fs.readdirSync(outputDir)
+	.filter(f => f.endsWith('json'))
+	.sort((a, b) => b.localeCompare(a))[0];
+
+const dump = require(path.join(outputDir, dumpFile));
 
 // Get all people from dump
 function GetDumpPeople() {
@@ -19,7 +29,7 @@ function GetDumpPeople() {
 // Get all people from database
 async function GetDbPeople() {
 	let dbPeople = [];
-	let res = await fetch(`${url}/api/people`);
+	let res = await fetch(`${apiUrl}/api/people`);
 	let data = await res.json()
 	data.forEach(person => {
 		dbPeople.push(person.name.toLowerCase());
@@ -33,7 +43,7 @@ async function PostPeopleToDatabase() {
 	const dbPeople = await GetDbPeople();
 	dumpPeople.forEach(async person => {
 		if (!dbPeople.includes(person)) {
-			let res = await fetch(`${url}/api/people`, {
+			let res = await fetch(`${apiUrl}/api/people`, {
 				method: "POST",
 				body: JSON.stringify({
 					name: person
@@ -51,13 +61,13 @@ async function PostPeopleToDatabase() {
 PostPeopleToDatabase();
 
 async function GetPeopleWithIds() {
-	let res = await fetch(`${url}/api/people`);
+	let res = await fetch(`${apiUrl}/api/people`);
 	let data = await res.json();
 	return data;
 }
 
 async function PutQuotePeopleToDatabase(quoteId, personId) {
-	await fetch(`${url}/api/quotes/assign/person`, {
+	await fetch(`${apiUrl}/api/quotes/assign/person`, {
 		method: "PUT",
 		body: JSON.stringify({
 			quote_id: quoteId,
@@ -70,7 +80,7 @@ async function PutQuotePeopleToDatabase(quoteId, personId) {
 }
 
 async function DeleteAllQuotes() {
-	await fetch(`${url}/api/quotes/clear`, {
+	await fetch(`${apiUrl}/api/quotes/clear`, {
 		method: "DELETE",
 	})
 }
@@ -100,7 +110,7 @@ async function PostQuotesToDatabase() {
 		await DeleteAllQuotes();
 	}
 	dump.forEach(async quote => {
-		let res = await fetch(`${url}/api/quotes`, {
+		let res = await fetch(`${apiUrl}/api/quotes`, {
 			method: "POST",
 			body: JSON.stringify({
 				content: quote.quote,
