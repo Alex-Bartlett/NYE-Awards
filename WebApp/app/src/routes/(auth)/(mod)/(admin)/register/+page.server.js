@@ -23,7 +23,8 @@ export const load = async ({ locals }) => {
             id,
             name
             `)
-			.not('id', 'in', registeredUsers);
+			.not('id', 'in', registeredUsers)
+			.eq('game_id', GAME_ID);
 		return data;
 	}
 	return {

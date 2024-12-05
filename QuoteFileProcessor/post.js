@@ -1,6 +1,7 @@
 // Import quotes
 // Update as necessary
-const apiUrl = 'http://127.0.0.1:5173'
+const apiUrl = 'http://localhost:5173'
+const apiKey = 'API KEY HERE'
 
 // Get most recent dump
 const fs = require('fs');
@@ -29,7 +30,11 @@ function GetDumpPeople() {
 // Get all people from database
 async function GetDbPeople() {
 	let dbPeople = [];
-	let res = await fetch(`${apiUrl}/api/people`);
+	let res = await fetch(`${apiUrl}/api/people`, {
+		headers: {
+			'api-key': apiKey
+		}
+	});
 	let data = await res.json()
 	data.forEach(person => {
 		dbPeople.push(person.name.toLowerCase());
@@ -49,7 +54,8 @@ async function PostPeopleToDatabase() {
 					name: person
 				}),
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'api-key': apiKey
 				}
 			});
 			let data = await res.json();
@@ -61,7 +67,11 @@ async function PostPeopleToDatabase() {
 PostPeopleToDatabase();
 
 async function GetPeopleWithIds() {
-	let res = await fetch(`${apiUrl}/api/people`);
+	let res = await fetch(`${apiUrl}/api/people`, {
+		headers: {
+			'api-key': apiKey
+		}
+	});
 	let data = await res.json();
 	return data;
 }
@@ -74,7 +84,8 @@ async function PutQuotePeopleToDatabase(quoteId, personId) {
 			person_id: personId
 		}),
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'api-key': apiKey
 		}
 	});
 }
@@ -82,6 +93,9 @@ async function PutQuotePeopleToDatabase(quoteId, personId) {
 async function DeleteAllQuotes() {
 	await fetch(`${apiUrl}/api/quotes/clear`, {
 		method: "DELETE",
+		headers: {
+			'api-key': apiKey
+		}
 	})
 }
 
@@ -114,15 +128,17 @@ async function PostQuotesToDatabase() {
 			method: "POST",
 			body: JSON.stringify({
 				content: quote.quote,
-				full_quote: quote.full_quote
+				full_quote: quote.full_quote,
+				round: 1
 			}),
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'api-key': apiKey
 			}
 		});
 		let data = await res.json();
-		console.log(data[0].content);
-		await AddPeopleConnections(quote, data[0]);
+		console.log(data.content);
+		await AddPeopleConnections(quote, data);
 	})
 }
 

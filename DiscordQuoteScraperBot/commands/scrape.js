@@ -38,7 +38,7 @@ async function fetchAllMessages(client) {
 
 	let quotes = [];
 
-	messages.forEach(msg => { if (msg.content.includes("2023")) { quotes.push(msg); } });
+	messages.forEach(msg => { if (msg.content.includes("2024")) { quotes.push(msg); } });
 
 	let date = Date.now();
 	try {
