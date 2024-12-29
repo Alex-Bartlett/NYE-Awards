@@ -21,6 +21,7 @@ async function GetTopQuotesOfRound(round) {
 }
 
 async function PromoteTopQuotes(quotes, newRound) {
+    console.log("New round: " + newRound);
     for (let quote of quotes) {
         // This is inefficient, and could be hugely optimised with a sproc, but for the sake of a hobby project this will suffice.
         // Turns out Vercel has a 5 second request timeout, so this method times out unless run locally
@@ -33,7 +34,9 @@ async function PromoteTopQuotes(quotes, newRound) {
         })
         // Associate the quote to its winning category
         await supabase.from('quote_categories').insert({ quote_id: newQuoteId, category_id: quote.category_id })
+        console.log("Promoted " + quote.content);
     }
+    console.log("Promotions finished");
 }
 
 export const PUT = async ({ request, fetch }) => { // Requires the following json body: "confirm":true
