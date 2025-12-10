@@ -1,4 +1,4 @@
-import { supabase } from '$lib/supabaseClient.js';
+import { knex } from '$lib/databaseClient.server.js';
 import { sequence } from '@sveltejs/kit/hooks';
 
 // Auth
@@ -12,8 +12,10 @@ const first = async ({ resolve, event }) => {
 	}
 
 	// Find user based on session
-	const userRes = await supabase.from('users').select('username, role, person_id').eq('user_auth_token', session).single();
-	const user = userRes.data;
+	const userRes = await knex('users').where('user_auth_token', session).first('username', 'role', 'person_id');
+
+	///const userRes = await supabase.from('users').select('username, role, person_id').eq('user_auth_token', session).single();
+	const user = userRes;
 	if (user) {
 		event.locals.user = {
 			name: user.username,
@@ -32,8 +34,9 @@ const second = async ({ resolve, event }) => {
 	let apiKeyValid = false
 	// Validate api key if exists
 	if (apiKey) {
-		const { data, error } = await supabase.from('api_keys').select().eq('key', apiKey).single();
-		if (data) {
+		//const { data, error } = await supabase.from('api_keys').select().eq('key', apiKey).single();
+		const res = await knex('api_keys').where('key', apiKey).first();
+		if (res) {
 			apiKeyValid = true;
 		}
 	}
