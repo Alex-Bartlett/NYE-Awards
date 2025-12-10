@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "NYE-Awards",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,43 +1,55 @@
 import { json } from '@sveltejs/kit';
-import { supabase } from "$lib/supabaseClient";
+import { knex } from "$lib/databaseClient.server.js";
 import { GAME_ID } from '$env/static/private';
 
 export const GET = async ({ url, params }) => {
 	const unvotedBy = url.searchParams.get('unvotedBy'); // PersonID - Returns only categories that have not got a vote beside them for that person
 	const round = url.searchParams.get('round'); // Round number - Required for unvotedBy (probably invalid REST)
-	let query = supabase
-		.from('categories')
-		.select()
-		.eq('game_id', GAME_ID)
-		.order('name');
+	// let query = supabase
+	// 	.from('categories')
+	// 	.select()
+	// 	.eq('game_id', GAME_ID)
+	// 	.order('name');
+	let query = knex('categories')
+		.where('game_id', GAME_ID)
+		.orderBy('name');
 
 	if (unvotedBy && round) {
-		const votesRes = await supabase
-			.from('votes')
-			.select('category_id')
-			.eq('person_id', unvotedBy)
-			.eq('round', round)
-		const votesData = votesRes.data.map((x) => x.category_id);
-		const votes = `(${votesData.toString()})`
+		// const votesRes = await supabase
+		// 	.from('votes')
+		// 	.select('category_id')
+		// 	.eq('person_id', unvotedBy)
+		// 	.eq('round', round)
 
-		query = query.not('id', 'in', votes);
+		const votesRes = await knex('votes')
+			.where('person_id', unvotedBy)
+			.andWhere('round', round)
+			.distinct('category_id');
+		const votes = votesRes.map((x) => x.category_id);
+
+		query = query.whereNotIn('id', votes);
 	}
 
-	let { data, error } = await query;
-	if (error) {
+	try { 
+		const res = await query.debug();
+		return json(res);
+	} catch (error) {
 		console.error(error);
+		return BadRequest(error);
 	}
-	return json(data);
 }
 
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	if (body.name) {
-		const { data, error } = await supabase
-			.from('categories')
+		// const { data, error } = await supabase
+		// 	.from('categories')
+		// 	.insert({ name: body.name, game_id: GAME_ID })
+		// 	.select();
+		const res = await knex('categories')
 			.insert({ name: body.name, game_id: GAME_ID })
-			.select();
-		return new Response(JSON.stringify(data), {
+			.returning('*');
+		return new Response(JSON.stringify(res), {
 			status: 201
 		});
 	}
