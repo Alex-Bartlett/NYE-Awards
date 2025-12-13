@@ -1,6 +1,6 @@
 import { fail, redirect } from "@sveltejs/kit";
 import bycrypt from 'bcrypt';
-import { supabase } from '$lib/supabaseClient.js';
+import { knex } from '$lib/databaseClient.server.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -49,13 +49,13 @@ const login = async ({ cookies, request, locals }) => {
 }
 
 async function getUserByUsername(username) {
-	const { data, error } = await supabase.from('users').select().ilike('username', username).single();
-	return data
+	const res = await knex('users').whereILike('username', username).first();
+	return res
 }
 
 async function getAuthenticatedUser(username) {
-	const { data, error } = await supabase.from('users').update({ user_auth_token: crypto.randomUUID() }).ilike("username", username).single().select();
-	return data;
+	const [res] = await knex('users').update({ user_auth_token: crypto.randomUUID() }).whereILike("username", username).returning('user_auth_token')
+	return res;
 }
 
 export const actions = { login }

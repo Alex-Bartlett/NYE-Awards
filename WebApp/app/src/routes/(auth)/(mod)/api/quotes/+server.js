@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { supabase } from "$lib/supabaseClient";
+import { knex } from "$lib/databaseClient.server.js";
 import { BadRequest, FormatQuoteData } from '../helper';
 import { GAME_ID } from '$env/static/private';
 
@@ -11,40 +11,62 @@ export const GET = async ({ params, url }) => {
 }
 
 async function GetAllQuotes(args) {
-	let query = supabase
-		.from('quotes')
-		.select(`
-		id,
-		content,
-		full_quote,
-		quote_people (
-			people (
-				id,
-				name
-			)
-		),
-		quote_categories${args.category ? '!inner' : ''} (
-			category_id,
-			categories (
-				id,
-				name
-			)
-		)
-		`)
-		.eq('game_id', GAME_ID);
+	// let query = supabase
+	// 	.from('quotes')
+	// 	.select(`
+	// 	id,
+	// 	content,
+	// 	full_quote,
+	// 	quote_people (
+	// 		people (
+	// 			id,
+	// 			name
+	// 		)
+	// 	),
+	// 	quote_categories${args.category ? '!inner' : ''} (
+	// 		category_id,
+	// 		categories (
+	// 			id,
+	// 			name
+	// 		)
+	// 	)
+	// 	`)
+	// 	.eq('game_id', GAME_ID);
+
+	let query = knex('quotes')
+		.select('quotes.id',
+			'quotes.content',
+			'quotes.full_quote',
+			'people.id',
+			'people.name',
+			'quote_categories.category_id',
+			'categories.id',
+			'categories.name')
+		.leftJoin('quote_people', 'quote_people.quote_id', '=', 'quotes.id')
+		.leftJoin('people', 'people.id', '=', 'quote_people.person_id')
+		
 
 	if (args.category) {
-		query = query.eq('quote_categories.category_id', args.category);
+		query = query.innerJoin('quote_categories', 'quote_categories.quote_id', '=', 'quotes.id')
+			.where('quote_categories.category_id', args.category);
 	}
+	else {
+		query = query.leftJoin('quote_categories', 'quote_categories.quote_id', '=', 'quotes.id')
+	}
+
+	query = query.leftJoin('categories', 'categories.id', '=', 'quote_categories.category_id')
+		.where('quotes.game_id', GAME_ID);
 
 	if (args.round) {
-		query = query.eq('round', args.round);
+		query = query.andWhere('round', args.round);
 	}
 
-	const { data, error } = await query;
+	query = query.debug(['enabled']);
 
-	if (data) {
-		return FormatQuotes(data);
+	const res = await query;
+
+	if (res) {
+		return FormatQuotes(res);
 	}
 	else {
 		return [];
@@ -63,17 +85,25 @@ function FormatQuotes(data) {
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	if (body && body.content && body.full_quote && body.round) {
-		const { data, error } = await supabase
-			.from('quotes')
+		// const { data, error } = await supabase
+		// 	.from('quotes')
+		// 	.insert({
+		// 		content: body.content,
+		// 		full_quote: body.full_quote,
+		// 		round: body.round,
+		// 		game_id: GAME_ID
+		// 	})
+		// 	.select()
+		// 	.single();
+		const res = await knex('quotes')
 			.insert({
 				content: body.content,
 				full_quote: body.full_quote,
 				round: body.round,
 				game_id: GAME_ID
 			})
-			.select()
-			.single();
-		return new Response(JSON.stringify(data), { status: 201 });
+			.returning('*');
+		return new Response(JSON.stringify(res), { status: 201 });
 	}
 	return BadRequest('Missing content or full_quote argument');
 }
