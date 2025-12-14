@@ -19,7 +19,7 @@ async function IncrementRound(currentRound) {
 async function GetTopQuotesOfRound(round) {
     const count = rounds_config[round].votes_per_category;
     //const { data, error } = await supabase.rpc('gettopquotes', { param_count: count, param_game_id: GAME_ID, param_round: round })
-    const res = await knex.raw('select * from gettopquotes(?, ?, ?)', [count, GAME_ID, round]);
+    const res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [count, GAME_ID, round]).select();
     return res;
 }
 
