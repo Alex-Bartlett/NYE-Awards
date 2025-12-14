@@ -27,7 +27,8 @@ export const GET = async ({ params }) => {
 		const res = await knex('quotes_with_details')
 			.where('id', params.id)
 			.select(knex.raw("id, content, full_quote, round, game_id, json_agg(DISTINCT jsonb_build_object('id', category_id, 'name', category_name)) AS categories, json_agg(DISTINCT jsonb_build_object('id', person_id, 'name', person_name)) AS people"))
-			.groupBy('id', 'content', 'full_quote', 'round', 'game_id');
+			.groupBy('id', 'content', 'full_quote', 'round', 'game_id')
+			.first();
 
 		if (res) {
 			return json(res);
