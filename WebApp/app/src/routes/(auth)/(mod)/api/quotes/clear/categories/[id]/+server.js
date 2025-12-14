@@ -3,11 +3,6 @@ import { BadRequest } from '../../../../helper';
 
 export const DELETE = async ({ params }) => {
 	if (params.id) {
-		// let { data, error } = await supabase
-		// 	.from('quote_categories')
-		// 	.delete()
-		// 	.eq("quote_id", params.id)
-
 		await knex('quote_categories')
 			.where('quote_id', params.id)
 			.del();

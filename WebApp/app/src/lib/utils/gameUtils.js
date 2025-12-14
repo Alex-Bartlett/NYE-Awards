@@ -7,11 +7,6 @@ import rounds_config from '../rounds.config.json'
  * @returns {Object} The game object for the given ID
  */
 export async function getGameInfo(gameId) {
-    // const { data, error } = await supabase
-    //     .from('games')
-    //     .select()
-    //     .eq('id', gameId)
-    //     .single();
     try {
         return await knex('games')
             .where('id', gameId)
@@ -32,7 +27,6 @@ export async function getGameInfo(gameId) {
  */
 export async function getTopQuotes(gameId, round) {
     const count = rounds_config[round].votes_per_category;
-    //const { data, error } = await supabase.rpc('gettopquotes', { param_count: count, param_game_id: gameId, param_round: round })
     let res;
     try {
         res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [round, gameId, count]).select();

@@ -4,11 +4,6 @@ import { BadRequest } from '../../helper';
 
 export const GET = async ({ params }) => {
 	if (params.id) {
-		// const { data, error } = await supabase
-		// 	.from('categories')
-		// 	.select()
-		// 	.eq('id', params.id)
-		// 	.single();
 		const res = await knex('categories')
 			.where('id', params.id)
 			.first();
@@ -22,10 +17,6 @@ export const GET = async ({ params }) => {
 
 export const DELETE = async ({ params }) => {
 	if (params.id) {
-		// const { error } = await supabase
-		// 	.from('categories')
-		// 	.delete()
-		// 	.eq('id', params.id);
 		await knex('categories')
 			.where('id', params.id)
 			.del();

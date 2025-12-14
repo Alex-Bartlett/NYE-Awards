@@ -3,11 +3,6 @@ import { knex } from "$lib/databaseClient.server.js";
 import { GAME_ID } from '$env/static/private';
 
 export const GET = async () => {
-	// let { data, error } = await supabase
-	// 	.from('people')
-	// 	.select()
-	// 	.eq('game_id', GAME_ID)
-	// 	.order('name');
 	
 	try {
 		var res = await knex('people')
@@ -26,10 +21,6 @@ export const GET = async () => {
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	if (body.name) {
-		// const { data, error } = await supabase
-		// 	.from('people')
-		// 	.insert({ name: body.name, game_id: GAME_ID })
-		// 	.select();
 		const res = await knex('people')
 			.insert({name: body.name, game_id: GAME_ID})
 			.returning('*');

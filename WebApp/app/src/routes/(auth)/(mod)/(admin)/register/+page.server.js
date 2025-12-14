@@ -12,19 +12,7 @@ const roles = {
 export const load = async ({ locals }) => {
 	// Don't redirect logged in users, only admins can register people
 	const fetchUnregisteredPeople = async () => {
-		// const res = await fetch('/api/people');
-		// const data = await res.json();
-		// return data;
-		//const registeredUsersRes = await supabase.from('users').select('person_id')
 		const registeredUsers = await knex('users').pluck('person_id');
-		// const { data, error } = await supabase
-		// 	.from('people')
-		// 	.select(`
-        //     id,
-        //     name
-        //     `)
-		// 	.not('id', 'in', registeredUsers)
-		// 	.eq('game_id', GAME_ID);
 		const res = await knex('people')
 			.whereNotIn('id', registeredUsers)
 			.andWhere('game_id', GAME_ID)
@@ -52,17 +40,6 @@ const register = async ({ request }) => {
 		return fail(400, { user: true })
 	}
 
-	// const res = await supabase
-	// 	.from('users')
-	// 	.insert({
-	// 		username: username,
-	// 		password_hash: await bcrypt.hash(password, 10),
-	// 		user_auth_token: crypto.randomUUID(),
-	// 		role: roles.USER,
-	// 		person_id: personId,
-	// 		game_id: GAME_ID
-	// 	})
-	// 	.select();
 	await knex('users')
 		.insert({
 			username: username,
@@ -77,7 +54,6 @@ const register = async ({ request }) => {
 }
 
 async function isUsernameUnique(username) {
-	//const { data, error } = await supabase.from('users').select().ilike('username', username).single();
 	const res = await knex('users').whereILike('username', username).first();
 	return res == undefined;
 }
