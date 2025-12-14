@@ -1,17 +1,17 @@
 meta {
-  name: DeletePerson
+  name: DeleteQuote
   type: http
-  seq: 2
+  seq: 5
 }
 
 delete {
-  url: {{baseUrl}}/people/{{id}}
+  url: {{baseUrl}}/quotes/{{id}}
   body: none
   auth: inherit
 }
 
 vars:pre-request {
-  id: 34
+  id: 848
 }
 
 settings {

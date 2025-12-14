@@ -33,54 +33,51 @@ async function GetAllQuotes(args) {
 	// 	`)
 	// 	.eq('game_id', GAME_ID);
 
-	let query = knex('quotes')
-		.select('quotes.id',
-			'quotes.content',
-			'quotes.full_quote',
-			'people.id',
-			'people.name',
-			'quote_categories.category_id',
-			'categories.id',
-			'categories.name')
-		.leftJoin('quote_people', 'quote_people.quote_id', '=', 'quotes.id')
-		.leftJoin('people', 'people.id', '=', 'quote_people.person_id')
+	// let query = knex('quotes')
+	// 	.select('quotes.id',
+	// 		'quotes.content',
+	// 		'quotes.full_quote',
+	// 		'people.id',
+	// 		'people.name',
+	// 		'quote_categories.category_id',
+	// 		'categories.id',
+	// 		'categories.name')
+	// 	.leftJoin('quote_people', 'quote_people.quote_id', '=', 'quotes.id')
+	// 	.leftJoin('people', 'people.id', '=', 'quote_people.person_id')
+
+	let query = knex('quotes_with_details')
+		.where('game_id', GAME_ID)
 		
 
 	if (args.category) {
-		query = query.innerJoin('quote_categories', 'quote_categories.quote_id', '=', 'quotes.id')
-			.where('quote_categories.category_id', args.category);
+		query = query.andWhere('category_id', args.category);
 	}
-	else {
-		query = query.leftJoin('quote_categories', 'quote_categories.quote_id', '=', 'quotes.id')
-	}
-
-	query = query.leftJoin('categories', 'categories.id', '=', 'quote_categories.category_id')
-		.where('quotes.game_id', GAME_ID);
 
 	if (args.round) {
 		query = query.andWhere('round', args.round);
 	}
 
+	query = query.select(knex.raw("id, content,	full_quote, round, game_id,	json_agg(DISTINCT jsonb_build_object('id', category_id, 'name', category_name)) AS categories, json_agg(DISTINCT jsonb_build_object('id', person_id, 'name', person_name)) AS people"))
+		.groupBy('id', 'content', 'full_quote', 'round', 'game_id')
 	query = query.debug(['enabled']);
 
-	const res = await query;
-
-	if (res) {
-		return FormatQuotes(res);
+	try {
+		return await query;
 	}
-	else {
+	catch (error) {
+		console.error(error);
 		return [];
 	}
 }
 
-function FormatQuotes(data) {
-	let formattedData = {}
-	data.forEach(elem => {
-		const formatted = FormatQuoteData(elem);
-		formattedData[formatted.id] = formatted
-	});
-	return formattedData;
-}
+// function FormatQuotes(data) {
+// 	let formattedData = {}
+// 	data.forEach(elem => {
+// 		const formatted = FormatQuoteData(elem);
+// 		formattedData[formatted.id] = formatted
+// 	});
+// 	return formattedData;
+// }
 
 export const POST = async ({ request }) => {
 	const body = await request.json();

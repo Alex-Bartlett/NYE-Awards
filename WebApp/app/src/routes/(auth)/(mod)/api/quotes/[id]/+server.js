@@ -24,24 +24,13 @@ export const GET = async ({ params }) => {
 		// 	)
 		// 	`)
 		// 	.eq('id', params.id);
-		const res = await knex('quotes')
-			.leftJoin('quote_people', 'quote_people.quote_id', '=', 'quotes.id')
-			.leftJoin('people', 'people.id', '=', 'quote_people.person_id')
-			.leftJoin('quote_categoires', 'quote_categories.quote_id', '=', 'quotes.id')
-			.leftJoin('categories', 'categories.id', '=', 'quote_categories.category_id')
-			.where('quotes.id', params.id)
-			.select(
-				'quotes.id',
-				'quotes.content',
-				'quotes.full_quote',
-				'people.id',
-				'people.name',
-				'categories.id',
-				'categories.name'
-			);
+		const res = await knex('quotes_with_details')
+			.where('id', params.id)
+			.select(knex.raw("id, content, full_quote, round, game_id, json_agg(DISTINCT jsonb_build_object('id', category_id, 'name', category_name)) AS categories, json_agg(DISTINCT jsonb_build_object('id', person_id, 'name', person_name)) AS people"))
+			.groupBy('id', 'content', 'full_quote', 'round', 'game_id');
 
-		if (res.length) {
-			return json(FormatQuoteData(res[0]));
+		if (res) {
+			return json(res);
 		}
 		return new Response(null, { status: 404 });
 	}
