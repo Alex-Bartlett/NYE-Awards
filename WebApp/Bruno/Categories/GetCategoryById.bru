@@ -1,0 +1,15 @@
+meta {
+  name: GetCategoryById
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/categories/{{id}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

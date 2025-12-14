@@ -1,4 +1,4 @@
 # Configure ENV
 
-- Add supabase urls
+- Add database connection string
 - Add game_id

@@ -1,0 +1,15 @@
+meta {
+  name: GetTotalQuotes
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/quotes/total
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

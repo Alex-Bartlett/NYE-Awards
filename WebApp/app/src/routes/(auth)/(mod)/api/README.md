@@ -1,6 +1,6 @@
 # Database Schema
 
-The API uses Supabase for its database, and makes use of their Javascript client library to query it. All querying is handled by the api. To create your own, simply create the required tables in your Supabase database.
+The API uses Postgres for its database, and makes use of Knex toquery it. All querying is handled by the api. To create your own, simply run the create script in your Postgres database.
 
 Define the database as following:
 

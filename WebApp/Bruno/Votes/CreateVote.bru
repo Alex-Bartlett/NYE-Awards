@@ -1,0 +1,32 @@
+meta {
+  name: CreateVote
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/vote
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "quote_id": {{quote_id}},
+    "category_id": {{category_id}},
+    "person_id": {{person_id}},
+    "round": {{round}}
+  }
+}
+
+vars:pre-request {
+  quote_id: 848
+  person_id: 35
+  category_id: 51
+  round: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

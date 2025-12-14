@@ -1,11 +1,14 @@
 import { fail, redirect } from "@sveltejs/kit";
 import bycrypt from 'bcrypt';
-import { supabase } from '$lib/supabaseClient.js';
+import { knex } from '$lib/databaseClient.server.js';
+
+// Force server-side navigation to avoid client-side redirect loops after setting cookies
+export const csr = false;
 
 export const load = async ({ locals }) => {
-	if (locals.user) {
-		throw redirect(302, '/');
-	}
+    if (locals.user) {
+        throw redirect(303, '/');
+    }
 }
 
 const login = async ({ cookies, request, locals }) => {
@@ -43,19 +46,18 @@ const login = async ({ cookies, request, locals }) => {
 		secure: process.env.NODE_ENV === 'production',
 		// set cookie to expire after 3 days
 		maxAge: 60 * 60 * 24 * 3
-	})
-	locals.action = 'login';
-	throw redirect(302, '/')
+	});
+	throw redirect(303, '/');
 }
 
 async function getUserByUsername(username) {
-	const { data, error } = await supabase.from('users').select().ilike('username', username).single();
-	return data
+	const res = await knex('users').whereILike('username', username).first();
+	return res
 }
 
 async function getAuthenticatedUser(username) {
-	const { data, error } = await supabase.from('users').update({ user_auth_token: crypto.randomUUID() }).ilike("username", username).single().select();
-	return data;
+	const [res] = await knex('users').update({ user_auth_token: crypto.randomUUID() }).whereILike("username", username).returning('user_auth_token')
+	return res;
 }
 
 export const actions = { login }

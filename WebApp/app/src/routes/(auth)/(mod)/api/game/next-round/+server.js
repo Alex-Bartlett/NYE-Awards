@@ -1,23 +1,23 @@
-import { supabase } from '$lib/supabaseClient';
+import { knex } from '$lib/databaseClient.server.js';
 import { BadRequest } from '../../helper';
 import { GAME_ID } from '$env/static/private';
 import rounds_config from '$lib/rounds.config.json';
 
 async function GetCurrentRound() {
-    const gameQuery = await supabase.from('games').select().eq('id', GAME_ID).single();
-    return gameQuery.data.current_round;
+    const gameQuery = await knex('games').select().where('id', GAME_ID).first();
+    return gameQuery.current_round;
 }
 
 async function IncrementRound(currentRound) {
-    const { data, error } = await supabase.from('games').update({ current_round: currentRound + 1 }).eq('id', GAME_ID).single().select();
-    console.log(`Incremented round: ${JSON.stringify(data)}`);
-    return data;
+    const [res] = await knex('games').update({ current_round: currentRound + 1 }).where('id', GAME_ID).returning('current_round')
+    console.log(`Incremented round: ${res.current_round}`);
+    return res;
 }
 
 async function GetTopQuotesOfRound(round) {
     const count = rounds_config[round].votes_per_category;
-    const { data, error } = await supabase.rpc('gettopquotes', { param_count: count, param_game_id: GAME_ID, param_round: round })
-    return data;
+    const res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [count, GAME_ID, round]).select();
+    return res;
 }
 
 async function PromoteTopQuotes(quotes, newRound) {
@@ -25,15 +25,15 @@ async function PromoteTopQuotes(quotes, newRound) {
     for (let quote of quotes) {
         // This is inefficient, and could be hugely optimised with a sproc, but for the sake of a hobby project this will suffice.
         // Turns out Vercel has a 5 second request timeout, so this method times out unless run locally
-        const quotePeopleQuery = await supabase.from('quote_people').select().eq('quote_id', quote.id);
-        const newQuoteQuery = await supabase.from('quotes').insert({ content: quote.content, full_quote: quote.full_quote, game_id: GAME_ID, round: newRound }).select().single();
-        const newQuoteId = newQuoteQuery.data.id;
+        const quotePeople = knex('quote_people').where('quote_id', quote.id).select()
+        const [newQuote] = await knex('quotes').insert({ content: quote.content, full_quote: quote.full_quote, game_id: GAME_ID, round: newRound }).returning('id')
+        const newQuoteId = newQuote.id;
         // Associate the relevant people to the new quote
-        quotePeopleQuery.data.forEach(async qp => {
-            await supabase.from('quote_people').insert({ quote_id: newQuoteId, person_id: qp.person_id });
+        quotePeople.forEach(async qp => {
+            await knex('quote_people').insert({ quote_id: newQuoteId, person_id: qp.person_id });
         })
         // Associate the quote to its winning category
-        await supabase.from('quote_categories').insert({ quote_id: newQuoteId, category_id: quote.category_id })
+        await knex('quote_categories').insert({ quote_id: newQuoteId, category_id: quote.category_id });
         console.log("Promoted " + quote.content);
     }
     console.log("Promotions finished");

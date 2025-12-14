@@ -29,7 +29,9 @@ const submit = async ({ request, fetch }) => {
 	});
 
 	// Retrieve quote from response so we can reference its ID
-	const quote = await res.json();
+	const quoteJson = await res.json();
+	const quote = quoteJson[0];
+
 
 	// Add quote_people
 	Object.values(people).forEach(async (person) => {

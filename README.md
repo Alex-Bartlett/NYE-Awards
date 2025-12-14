@@ -7,7 +7,7 @@ A digitalisation of a yearly tradition with friends, NYE Awards is a voting and 
 ## Prerequisites
 
 - A Discord server with a quotes channel. Quotes should be formatted as `"[quote]" - [name(s)] [year]` e.g _"Example" - Alex, 2023._
-- NYE awards uses Supabase's client library, so a Supabase database is required. Run the create script in the root of this repository.
+- NYE awards uses a Postgres database to store the game data. Run the create script in the root of this repository.
 
 
 
@@ -23,7 +23,7 @@ A digitalisation of a yearly tradition with friends, NYE Awards is a voting and 
 
 	`cp .env.example .env`
 
-	Edit the .env to include your Supabase URLs and game id (default is 1)
+	Edit the .env to include your connection string and game id (default is 1)
 
 6. Start the web app:
 

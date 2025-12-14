@@ -53,6 +53,7 @@
 		let winningQuote = quotes[0];
 		const res = await fetch(`/api/quotes/${winningQuote.id}`);
 		const data = await res.json();
+		console.log(data);
 		const people = data.people;
 		// People is returned as an array of person objects
 		let winners = [];
@@ -60,7 +61,7 @@
 			// https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
 			const name = person.name.charAt(0).toUpperCase() + person.name.slice(1);
 			winners.push(name);
-		});
+		});//s
 		return winners.join(", ");
 	}
 

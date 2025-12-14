@@ -1,0 +1,20 @@
+meta {
+  name: GetQuote
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/quotes/{{id}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  id: 848
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,28 @@
+meta {
+  name: UnassignPersonFromQuote
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/quotes/assign/person
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "quote_id": {{quoteId}},
+    "person_id": {{personId}}
+  }
+}
+
+vars:pre-request {
+  quoteId: 849
+  personId: 35
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

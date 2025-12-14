@@ -1,0 +1,20 @@
+meta {
+  name: GetQuoteByIndex
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/quotes/indexOf/{{index}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  index: 4
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

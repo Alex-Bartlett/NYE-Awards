@@ -1,0 +1,30 @@
+meta {
+  name: CreateQuote
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/quotes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "content": "{{content}}",
+    "full_quote": "{{full_quote}}",
+    "round": {{round}}
+  }
+}
+
+vars:pre-request {
+  content: Test quote
+  full_quote: 'Test quote' - Alex 2025
+  round: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

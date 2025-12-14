@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient';
+import { knex } from '../databaseClient.server';
 import rounds_config from '../rounds.config.json'
 
 /**
@@ -7,18 +7,16 @@ import rounds_config from '../rounds.config.json'
  * @returns {Object} The game object for the given ID
  */
 export async function getGameInfo(gameId) {
-    const { data, error } = await supabase
-        .from('games')
-        .select()
-        .eq('id', gameId)
-        .single();
-    if (error) {
+    try {
+        return await knex('games')
+            .where('id', gameId)
+            .first();
+    } catch (error) {
         console.error('Error retrieving game info from database');
         console.error(error);
         // Return an empty object in the case of an error; 'data' will be undefined
         return {};
     }
-    return data;
 }
 
 /**
@@ -29,10 +27,12 @@ export async function getGameInfo(gameId) {
  */
 export async function getTopQuotes(gameId, round) {
     const count = rounds_config[round].votes_per_category;
-    const { data, error } = await supabase.rpc('gettopquotes', { param_count: count, param_game_id: gameId, param_round: round })
-    if (error) {
-        console.error('Error retrieving top quotes from database');
+    let res;
+    try {
+        res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [round, gameId, count]).select();
+    } catch (error) {
+                console.error('Error retrieving top quotes from database');
         console.error(error)
     }
-    return data;
+    return res;
 }

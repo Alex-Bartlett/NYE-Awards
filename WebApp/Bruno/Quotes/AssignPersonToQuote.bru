@@ -1,0 +1,28 @@
+meta {
+  name: AssignPersonToQuote
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/quotes/assign/person
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "quote_id": {{quoteId}},
+    "person_id": {{personId}}
+  }
+}
+
+vars:pre-request {
+  personId: 35
+  quoteId: 849
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
