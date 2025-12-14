@@ -2,10 +2,13 @@ import { fail, redirect } from "@sveltejs/kit";
 import bycrypt from 'bcrypt';
 import { knex } from '$lib/databaseClient.server.js';
 
+// Force server-side navigation to avoid client-side redirect loops after setting cookies
+export const csr = false;
+
 export const load = async ({ locals }) => {
-	if (locals.user) {
-		throw redirect(302, '/');
-	}
+    if (locals.user) {
+        throw redirect(303, '/');
+    }
 }
 
 const login = async ({ cookies, request, locals }) => {
@@ -43,9 +46,8 @@ const login = async ({ cookies, request, locals }) => {
 		secure: process.env.NODE_ENV === 'production',
 		// set cookie to expire after 3 days
 		maxAge: 60 * 60 * 24 * 3
-	})
-	locals.action = 'login';
-	throw redirect(302, '/')
+	});
+	throw redirect(303, '/');
 }
 
 async function getUserByUsername(username) {
