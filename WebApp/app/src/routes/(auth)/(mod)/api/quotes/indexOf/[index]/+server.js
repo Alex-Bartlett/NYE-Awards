@@ -27,24 +27,13 @@ export const GET = async ({ params }) => {
 		// 	.eq('game_id', GAME_ID)
 		// 	.order('id', { ascending: true })
 		// 	.range(params.index, params.index);
-		const res = await knex('quotes')
-			.leftJoin('quote_people', 'quote_people.quote_id', '=', 'quotes.id')
-			.leftJoin('people', 'people.id', '=', 'quote_people.person_id')
-			.leftJoin('quote_categoires', 'quote_categories.quote_id', '=', 'quotes.id')
-			.leftJoin('categories', 'categories.id', '=', 'quote_categories.category_id')
-			.where('quotes.game_id', GAME_ID)
-			.orderBy('quotes.id', 'asc')
-			.select(
-				'quotes.id',
-				'quotes.content',
-				'quotes.full_quote',
-				'people.id',
-				'people.name',
-				'categories.id',
-				'categories.name'
-			);
+		const res = await knex('quotes_with_details')
+			.select(knex.raw("id, content,	full_quote, round, game_id,	json_agg(DISTINCT jsonb_build_object('id', category_id, 'name', category_name)) AS categories, json_agg(DISTINCT jsonb_build_object('id', person_id, 'name', person_name)) AS people"))
+			.where('game_id', GAME_ID)
+			.groupBy('id', 'content', 'full_quote', 'round', 'game_id')
+			.orderBy('id', 'asc');
 		if (res && res.length && res[params.index]) {
-			return json(FormatQuoteData(res[params.index]));
+			return json(res[params.index]);
 		}
 		return new Response(null, { status: 404 });
 	}

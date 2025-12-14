@@ -31,7 +31,7 @@ export const GET = async ({ url, params }) => {
 	}
 
 	try { 
-		const res = await query.debug();
+		const res = await query;
 		return json(res);
 	} catch (error) {
 		console.error(error);

@@ -15,7 +15,7 @@ export async function getGameInfo(gameId) {
     try {
         return await knex('games')
             .where('id', gameId)
-            .select();
+            .first();
     } catch (error) {
         console.error('Error retrieving game info from database');
         console.error(error);
@@ -35,7 +35,7 @@ export async function getTopQuotes(gameId, round) {
     //const { data, error } = await supabase.rpc('gettopquotes', { param_count: count, param_game_id: gameId, param_round: round })
     let res;
     try {
-        res = await knex.raw('select * from gettopquotes(?, ?, ?)', [count, gameId, round]);
+        res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [round, gameId, count]).select();
     } catch (error) {
                 console.error('Error retrieving top quotes from database');
         console.error(error)

@@ -58,8 +58,7 @@ async function GetAllQuotes(args) {
 	}
 
 	query = query.select(knex.raw("id, content,	full_quote, round, game_id,	json_agg(DISTINCT jsonb_build_object('id', category_id, 'name', category_name)) AS categories, json_agg(DISTINCT jsonb_build_object('id', person_id, 'name', person_name)) AS people"))
-		.groupBy('id', 'content', 'full_quote', 'round', 'game_id')
-	query = query.debug(['enabled']);
+		.groupBy('id', 'content', 'full_quote', 'round', 'game_id');
 
 	try {
 		return await query;

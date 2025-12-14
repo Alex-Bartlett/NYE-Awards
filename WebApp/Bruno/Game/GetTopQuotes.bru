@@ -1,17 +1,17 @@
 meta {
-  name: GetQuote
+  name: GetTopQuotes
   type: http
-  seq: 4
+  seq: 2
 }
 
 get {
-  url: {{baseUrl}}/quotes/{{id}}
+  url: {{baseUrl}}/game/top-quotes
   body: none
   auth: inherit
 }
 
-vars:pre-request {
-  id: 848
+params:query {
+  ~round: 1
 }
 
 settings {

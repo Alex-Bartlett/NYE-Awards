@@ -10,7 +10,8 @@ export const GET = async () => {
 	// 	.eq('game_id', GAME_ID);
 	const res = await knex('quotes')
 		.where('game_id', GAME_ID)
-		.count('id');
+		.count('id')
+		.first();
 
-	return new Response(res, { status: 200 });
+	return new Response(res.count, { status: 200 });
 }

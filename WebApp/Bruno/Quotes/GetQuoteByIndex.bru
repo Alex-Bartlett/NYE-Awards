@@ -1,17 +1,17 @@
 meta {
-  name: GetQuote
+  name: GetQuoteByIndex
   type: http
-  seq: 4
+  seq: 10
 }
 
 get {
-  url: {{baseUrl}}/quotes/{{id}}
+  url: {{baseUrl}}/quotes/indexOf/{{index}}
   body: none
   auth: inherit
 }
 
 vars:pre-request {
-  id: 848
+  index: 4
 }
 
 settings {

@@ -1,0 +1,28 @@
+meta {
+  name: AssignCategoryToQuote
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/quotes/assign/category
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "quote_id": {{quote_id}},
+    "category_id": {{category_id}}
+  }
+}
+
+vars:pre-request {
+  quote_id: 848
+  category_id: 51
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

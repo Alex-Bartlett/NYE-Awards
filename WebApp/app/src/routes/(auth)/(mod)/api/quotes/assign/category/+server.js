@@ -42,6 +42,7 @@ export const DELETE = async ({ request }) => {
 	await knex('quote_categories')
 		.where('quote_id', body.quote_id)
 		.andWhere('category_id', body.category_id)
+		.del();
 		
 	return new Response(null, { status: 204 });
 }

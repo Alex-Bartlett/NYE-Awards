@@ -16,7 +16,7 @@ export const load = async ({ locals }) => {
 		// const data = await res.json();
 		// return data;
 		//const registeredUsersRes = await supabase.from('users').select('person_id')
-		const registeredUsers = await knex('users').select('person_id');
+		const registeredUsers = await knex('users').pluck('person_id');
 		// const { data, error } = await supabase
 		// 	.from('people')
 		// 	.select(`
@@ -79,7 +79,7 @@ const register = async ({ request }) => {
 async function isUsernameUnique(username) {
 	//const { data, error } = await supabase.from('users').select().ilike('username', username).single();
 	const res = await knex('users').whereILike('username', username).first();
-	return res;
+	return res == undefined;
 }
 
 export const actions = { register }
