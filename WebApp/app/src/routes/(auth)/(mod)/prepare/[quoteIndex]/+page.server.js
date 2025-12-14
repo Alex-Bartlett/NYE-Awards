@@ -1,4 +1,4 @@
-export const load = ({ params, fetch }) => {
+export const load = async ({ params, fetch }) => {
 	const fetchCategories = async () => {
 		const res = await fetch('/api/categories');
 		const data = await res.json();
@@ -30,18 +30,15 @@ export const load = ({ params, fetch }) => {
 			return null;
 		}
 	}
-	const updateQuote = async (quoteId) => {
-		const res = await fetch('../api/quotes/assign')
-	}
 	const getNextIndex = () => {
 		return parseInt(params.quoteIndex) + 1;
 	}
 	return {
-		categories: fetchCategories(),
-		quotes: fetchQuotes(),
-		people: fetchPeople(),
-		numQuotes: fetchNumQuotes(),
-		quote: fetchQuoteByIndex(),
+		categories: await fetchCategories(),
+		quotes: await fetchQuotes(),
+		people: await fetchPeople(),
+		numQuotes: await fetchNumQuotes(),
+		quote: await fetchQuoteByIndex(),
 		nextIndex: getNextIndex(),
 	}
 }
