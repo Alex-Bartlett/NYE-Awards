@@ -19,7 +19,7 @@ export const load = async ({ params, fetch, locals }) => {
 		const res = await fetch(`/api/categories?unvotedBy=${locals.user.person_id}&round=${await FetchRound()}`)
 		const data = await res.json();
 		const ids = data.map((x) => x.id);
-		return !ids.includes(Number(params.categoryId))
+		return !ids.includes(params.categoryId)
 	}
 	const fetchCategory = async () => {
 		const res = await fetch(`/api/categories/${params.categoryId}`);

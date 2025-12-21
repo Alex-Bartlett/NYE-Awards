@@ -8,12 +8,12 @@
 	let peopleChecklist;
 
 	async function ClearCategories() {
-		await fetch(`../api/quotes/clear/categories/${data.quote.id}`, {
+		await fetch(`/api/quotes/clear/categories/${data.quote.id}`, {
 			method: "DELETE",
 		});
 	}
 	async function ClearPeople() {
-		await fetch(`../api/quotes/clear/people/${data.quote.id}`, {
+		await fetch(`/api/quotes/clear/people/${data.quote.id}`, {
 			method: "DELETE",
 		});
 	}
@@ -22,7 +22,7 @@
 		await ClearCategories();
 		categoryChecklist.activeCategories.forEach(async (category) => {
 			if (category.active == true) {
-				await fetch(`../api/quotes/assign/category`, {
+				await fetch(`/api/quotes/assign/category`, {
 					method: "PUT",
 					body: JSON.stringify({
 						quote_id: data.quote.id,
@@ -34,7 +34,7 @@
 		await ClearPeople();
 		peopleChecklist.activePeople.forEach(async (person) => {
 			if (person.active == true) {
-				await fetch("../api/quotes/assign/person", {
+				await fetch("/api/quotes/assign/person", {
 					method: "PUT",
 					body: JSON.stringify({
 						quote_id: data.quote.id,
@@ -43,7 +43,7 @@
 				});
 			}
 		});
-		const href = `./${data.nextIndex}`;
+		const href = `/prepare/${data.nextIndex}`;
 		goto(href);
 	}
 </script>

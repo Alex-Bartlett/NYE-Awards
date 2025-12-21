@@ -7,7 +7,7 @@ const { log } = require('node:console');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('scrape')
-		.setDescription('Scrapes all the quotes from the quotes channel from 2023'),
+		.setDescription(`Scrapes all the quotes from the quotes channel from ${config.Year}`),
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: false });
 
@@ -38,7 +38,7 @@ async function fetchAllMessages(client) {
 
 	let quotes = [];
 
-	messages.forEach(msg => { if (msg.content.includes("2024")) { quotes.push(msg); } });
+	messages.forEach(msg => { if (msg.content.includes(config.Year.toString())) { quotes.push(msg); } });
 
 	let date = Date.now();
 	try {

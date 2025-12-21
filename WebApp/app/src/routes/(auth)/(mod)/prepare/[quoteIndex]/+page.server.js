@@ -16,12 +16,12 @@ export const load = async ({ params, fetch }) => {
 	}
 	// Possibly not needed?
 	const fetchNumQuotes = async () => {
-		const res = await fetch('../api/quotes/total');
+		const res = await fetch('/api/quotes/total');
 		const data = await res.json()
 		return data;
 	};
 	const fetchQuoteByIndex = async () => {
-		const res = await fetch(`../api/quotes/indexOf/${params.quoteIndex}`);
+		const res = await fetch(`/api/quotes/indexOf/${params.quoteIndex}`);
 		if (res.status != 404) {
 			const data = await res.json();
 			return data;

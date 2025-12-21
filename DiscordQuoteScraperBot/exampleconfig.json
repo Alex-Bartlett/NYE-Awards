@@ -2,5 +2,6 @@
 	"Token": "discord bot token",
 	"ClientID": "discord bot client id",
 	"GuildID": "server id to scrape",
-	"ChannelID": "channel id to scrape"
+	"ChannelID": "channel id to scrape",
+    "Year": "2025"
 }

@@ -39,7 +39,7 @@ async function GetAllQuotes(args) {
 export const POST = async ({ request }) => {
 	const body = await request.json();
 	if (body && body.content && body.full_quote && body.round) {
-		const res = await knex('quotes')
+		const [res] = await knex('quotes')
 			.insert({
 				content: body.content,
 				full_quote: body.full_quote,
