@@ -1,5 +1,6 @@
 package-lock.json
-
+# Hide certificates
+*.crt
 # Logs
 logs
 *.log

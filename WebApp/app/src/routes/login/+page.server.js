@@ -26,7 +26,9 @@ const login = async ({ cookies, request, locals }) => {
 		return fail(400, { credentials: true });
 	}
 
-	const userPassword = await bycrypt.compare(password, user.password_hash);
+	const userPassword = user
+		? await bycrypt.compare(password, user.password_hash)
+		: await bycrypt.compare(password, '$2b$10$dummyhashtopreventtiming');;
 
 	if (!userPassword) {
 		return fail(400, { credentials: true });
