@@ -1,6 +1,6 @@
 <script>
 	import "../app.css";
-	import logo from "$lib/assets/moomawardslogo.gif";
+	import logo from "$lib/assets/moomawardslogo2025.png";
 </script>
 
 <header>
