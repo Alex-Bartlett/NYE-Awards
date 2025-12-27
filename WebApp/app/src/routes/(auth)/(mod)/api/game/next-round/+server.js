@@ -16,7 +16,7 @@ async function IncrementRound(currentRound) {
 
 async function GetTopQuotesOfRound(round) {
     const count = rounds_config[round].votes_per_category;
-    const res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [count, GAME_ID, round]).select();
+    const res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [round, GAME_ID, count]).select().debug();
     return res;
 }
 
@@ -25,7 +25,7 @@ async function PromoteTopQuotes(quotes, newRound) {
     for (let quote of quotes) {
         // This is inefficient, and could be hugely optimised with a sproc, but for the sake of a hobby project this will suffice.
         // Turns out Vercel has a 5 second request timeout, so this method times out unless run locally
-        const quotePeople = knex('quote_people').where('quote_id', quote.id).select()
+        const quotePeople = await knex('quote_people').where('quote_id', quote.id).select()
         const [newQuote] = await knex('quotes').insert({ content: quote.content, full_quote: quote.full_quote, game_id: GAME_ID, round: newRound }).returning('id')
         const newQuoteId = newQuote.id;
         // Associate the relevant people to the new quote
