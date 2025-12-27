@@ -16,7 +16,7 @@ async function IncrementRound(currentRound) {
 
 async function GetTopQuotesOfRound(round) {
     const count = rounds_config[round].votes_per_category;
-    const res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?))', [round, GAME_ID, count]).select().debug();
+    const res = await knex.fromRaw('(select * from gettopquotes(?, ?, ?)) as topquotes', [round, GAME_ID, count]).select().debug();
     return res;
 }
 
